@@ -16,6 +16,7 @@ try:
 except Exception:
     Groq = None
 
+import ahocorasick
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONTENT_DIR = BASE_DIR / "content" / "posts"
@@ -147,6 +148,21 @@ CATEGORY_KEYWORDS = {
     ],
 }
 
+automaton = ahocorasick.Automaton()
+
+# Combine categories for overlapping words
+word_to_cats = {}
+for cat, words in CATEGORY_KEYWORDS.items():
+    for word in words:
+        if word not in word_to_cats:
+            word_to_cats[word] = []
+        word_to_cats[word].append(cat)
+
+for word, cats in word_to_cats.items():
+    automaton.add_word(word, (cats, word))
+
+automaton.make_automaton()
+
 session = requests.Session()
 session.headers.update({"User-Agent":"Mozilla/5.0"})
 
@@ -196,10 +212,17 @@ def parse_date(entry):
 def classify(title, text):
     content = (title + " " + text).lower()
     scores = {k:0 for k in CATEGORY_KEYWORDS}
-    for cat, words in CATEGORY_KEYWORDS.items():
-        for w in words:
-            if w in content:
-                scores[cat] += 1
+
+    # words can belong to multiple categories
+    # we want to count each unique word matched per category
+    found_words = set()
+    for end_index, (cats, word) in automaton.iter(content):
+        found_words.add((tuple(cats), word))
+
+    for cats, word in found_words:
+        for cat in cats:
+            scores[cat] += 1
+
     best = max(scores, key=scores.get)
     return best if scores[best] else "research"
 
