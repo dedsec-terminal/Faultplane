@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import logging
 import hashlib
 from pathlib import Path
 from datetime import datetime, timezone
@@ -18,6 +19,9 @@ except Exception:
     Groq = None
 
 import ahocorasick
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONTENT_DIR = BASE_DIR / "content" / "posts"
@@ -233,7 +237,11 @@ def fetch_article(url):
         r = session.get(url, timeout=20)
         r.raise_for_status()
         return trafilatura.extract(r.text) or ""
-    except Exception:
+    except requests.RequestException as e:
+        logger.warning(f"Failed to fetch article from {url}: {e}")
+        return ""
+    except Exception as e:
+        logger.error(f"Error processing {url}: {e}")
         return ""
 
 
