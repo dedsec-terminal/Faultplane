@@ -1,4 +1,4 @@
-# DedSec Terminal
+# Faultplane
 
 A cybersecurity intelligence platform that aggregates vulnerability disclosures, malware campaigns, breach reports, and security research into a structured, searchable knowledge base.
 
@@ -27,4 +27,4 @@ Intended for cybersecurity enthusiasts  looking for a consolidated reference poi
 
 ---
 
-**Live →** [dedsec-terminal.github.io](https://dedsec-terminal.github.io)
+**Live →** [dedsec-terminal.github.io/faultplane](https://dedsec-terminal.github.io/faultplane)
