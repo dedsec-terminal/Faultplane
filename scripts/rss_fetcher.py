@@ -2,6 +2,9 @@ import os
 import re
 import json
 import hashlib
+import socket
+import urllib.parse
+import ipaddress
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -228,13 +231,52 @@ def classify(title, text):
     return best if scores[best] else "research"
 
 
-def fetch_article(url):
+def is_safe_url(url):
     try:
-        r = session.get(url, timeout=20)
-        r.raise_for_status()
-        return trafilatura.extract(r.text) or ""
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            return False
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+
+        addr_info = socket.getaddrinfo(hostname, None)
+        for res in addr_info:
+            ip_str = res[4][0]
+            ip = ipaddress.ip_address(ip_str)
+            if not ip.is_global:
+                return False
+        return True
     except Exception:
-        return ""
+        return False
+
+
+def fetch_article(url, max_redirects=5):
+    current_url = url
+    redirects = 0
+
+    while redirects <= max_redirects:
+        if not is_safe_url(current_url):
+            return ""
+
+        try:
+            r = session.get(current_url, timeout=20, allow_redirects=False)
+
+            if r.status_code in (301, 302, 303, 307, 308):
+                location = r.headers.get("Location")
+                if not location:
+                    break
+                # Handle relative redirects
+                current_url = urllib.parse.urljoin(current_url, location)
+                redirects += 1
+                continue
+
+            r.raise_for_status()
+            return trafilatura.extract(r.text) or ""
+        except Exception:
+            return ""
+
+    return ""
 
 
 def summarize(title, text):
