@@ -353,7 +353,7 @@ def main():
         path = CONTENT_DIR / f"{slug}.md"
 
         markdown = f"""---
-title: "{item['title'].replace('"', "'")}"
+title: {json.dumps(item['title'])}
 date: {item['published'].isoformat()}
 draft: false
 categories:
