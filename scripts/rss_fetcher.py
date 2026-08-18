@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 import feedparser
 import requests
 import trafilatura
+from concurrent.futures import ThreadPoolExecutor
 
 from quote import get_random_quote
 
@@ -295,9 +296,11 @@ def main():
         remaining.sort(key=lambda x: x["published"], reverse=True)
         selected.extend(remaining[:10])
 
+    items_to_process = []
+    temp_category_count = category_count.copy()
     for item in selected:
         cat = item["category"]
-        if category_count[cat] >= MIN_POSTS_PER_CATEGORY:
+        if temp_category_count[cat] >= MIN_POSTS_PER_CATEGORY:
             continue
 
         slug = clean_slug(item["title"], item["link"])
@@ -305,9 +308,26 @@ def main():
         if path.exists():
             continue
 
+        items_to_process.append(item)
+        temp_category_count[cat] += 1 # Pre-increment to keep count accurate while pre-selecting
+
+    def process_item(item):
         summary = summarize(item["title"], item["raw"])
         if not summary:
+            return None
+        return item, summary
+
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        results = executor.map(process_item, items_to_process)
+
+    for result in results:
+        if not result:
             continue
+
+        item, summary = result
+        cat = item["category"]
+        slug = clean_slug(item["title"], item["link"])
+        path = CONTENT_DIR / f"{slug}.md"
 
         markdown = f"""---
 title: "{item['title'].replace('"', "'")}"
