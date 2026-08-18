@@ -19,8 +19,4 @@ Notes and caveats:
 - `ip.is_global` is a reasonable default but review RFC ranges and your policy for link-local or shared address spaces.
 - Tests currently perform real DNS lookups; consider mocking `socket.getaddrinfo` in CI to avoid flakiness.
 
-This file was added to ensure the PR includes an explicit merge-resolution note (since I can't edit the pull request body via the available API from this agent). Pushing this file also creates a fresh commit on the branch which will re-run CI and GitHub mergeability checks.
-
-If you'd like, I can now:
-- Add more detailed tests that mock DNS and redirect behavior, or
-- Attempt to merge the PR once CI passes (you'll need to confirm merging or give me permission to merge).
+This file was added to ensure the PR includes an explicit merge-resolution note.

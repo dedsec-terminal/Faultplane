@@ -399,7 +399,7 @@ def main():
         path = CONTENT_DIR / f"{slug}.md"
 
         markdown = f"""---
-title: "{item['title'].replace('"', "'") }"
+title: "{item['title'].replace('\"', "'") }"
 date: {item['published'].isoformat()}
 draft: false
 categories:
