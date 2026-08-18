@@ -199,8 +199,8 @@ def save_json(path, data):
 
 
 def clean_slug(title, link=None):
-    slug = re.sub(r"[^a-z0-9\\s-]", "", title.lower())
-    slug = re.sub(r"\\s+", "-", slug).strip("-")
+    slug = re.sub(r"[^a-z0-9\s-]", "", title.lower())
+    slug = re.sub(r"\s+", "-", slug).strip("-")
     if len(slug) < 8:
         slug = "intel-" + hashlib.md5((link or title).encode()).hexdigest()[:8]
     return slug[:120]
