@@ -257,14 +257,7 @@ def summarize(title, text):
     return text[:1000]
 
 
-def main():
-    print("Intel Balancer v4 Running")
-
-    seen = set(load_json(SEEN_FILE, []))
-    checkpoints = load_json(CHECKPOINT_FILE, {})
-
-    category_count = {k:0 for k in CATEGORY_KEYWORDS}
-
+def fetch_candidates(seen, checkpoints):
     candidates = []
 
     for feed_url in RSS_FEEDS:
@@ -306,6 +299,10 @@ def main():
                 "hash": h,
             })
 
+    return candidates
+
+
+def filter_candidates(candidates, category_count):
     candidates.sort(key=lambda x: x["published"], reverse=True)
 
     selected = []
@@ -334,6 +331,9 @@ def main():
         items_to_process.append(item)
         temp_category_count[cat] += 1 # Pre-increment to keep count accurate while pre-selecting
 
+    return items_to_process
+
+def write_posts(items_to_process, seen, checkpoints, category_count):
     def process_item(item):
         summary = summarize(item["title"], item["raw"])
         if not summary:
@@ -377,6 +377,21 @@ Source: [{item['title']}]({item['link']})
         checkpoints[item["feed"]] = item["published"].isoformat()
 
         print(f"[{cat}] {path.name}")
+
+
+def main():
+    print("Intel Balancer v4 Running")
+
+    seen = set(load_json(SEEN_FILE, []))
+    checkpoints = load_json(CHECKPOINT_FILE, {})
+
+    category_count = {k:0 for k in CATEGORY_KEYWORDS}
+
+    candidates = fetch_candidates(seen, checkpoints)
+
+    items_to_process = filter_candidates(candidates, category_count)
+
+    write_posts(items_to_process, seen, checkpoints, category_count)
 
     save_json(SEEN_FILE, sorted(list(seen)))
     save_json(CHECKPOINT_FILE, checkpoints)
