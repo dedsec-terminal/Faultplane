@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import logging
 import hashlib
 import socket
 import urllib.parse
@@ -21,6 +22,9 @@ except Exception:
     Groq = None
 
 import ahocorasick
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONTENT_DIR = BASE_DIR / "content" / "posts"
@@ -184,7 +188,7 @@ def load_json(path, default):
         try:
             with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except Exception:
+        except (json.JSONDecodeError, OSError):
             pass
     return default
 
@@ -195,8 +199,8 @@ def save_json(path, data):
 
 
 def clean_slug(title, link=None):
-    slug = re.sub(r"[^a-z0-9\\s-]", "", title.lower())
-    slug = re.sub(r"\\s+", "-", slug).strip("-")
+    slug = re.sub(r"[^a-z0-9\s-]", "", title.lower())
+    slug = re.sub(r"\s+", "-", slug).strip("-")
     if len(slug) < 8:
         slug = "intel-" + hashlib.md5((link or title).encode()).hexdigest()[:8]
     return slug[:120]
@@ -288,7 +292,7 @@ def summarize(title, text):
                 model="llama-3.3-70b-versatile",
                 messages=[{
                     "role":"user",
-                    "content":f"Summarize in 3 concise paragraphs:\\nTitle:{title}\\n{text[:10000]}"
+                    "content":f"Summarize in 3 concise paragraphs:\nTitle:{title}\n{text[:10000]}"
                 }],
                 temperature=0.2,
                 max_tokens=400
@@ -315,7 +319,7 @@ def main():
 
         for entry in feed.entries[:30]:
             link = entry.get("link")
-            title = entry.get("title","").strip()
+            title = entry.get("title","" ).strip()
             if not title or not link:
                 continue
 
@@ -395,7 +399,7 @@ def main():
         path = CONTENT_DIR / f"{slug}.md"
 
         markdown = f"""---
-title: "{item['title'].replace('"', "'")}"
+title: "{item['title'].replace('"', "'") }"
 date: {item['published'].isoformat()}
 draft: false
 categories:
@@ -423,11 +427,10 @@ Source: [{item['title']}]({item['link']})
     save_json(SEEN_FILE, sorted(list(seen)))
     save_json(CHECKPOINT_FILE, checkpoints)
 
-    print("\\nFinal Category Balance:")
+    print("\nFinal Category Balance:")
     for k, v in category_count.items():
         print(k, v)
 
 
 if __name__ == "__main__":
     main()
-
