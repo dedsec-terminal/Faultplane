@@ -3,6 +3,9 @@ import re
 import json
 import logging
 import hashlib
+import socket
+import urllib.parse
+import ipaddress
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -196,8 +199,8 @@ def save_json(path, data):
 
 
 def clean_slug(title, link=None):
-    slug = re.sub(r"[^a-z0-9\s-]", "", title.lower())
-    slug = re.sub(r"\s+", "-", slug).strip("-")
+    slug = re.sub(r"[^a-z0-9\\s-]", "", title.lower())
+    slug = re.sub(r"\\s+", "-", slug).strip("-")
     if len(slug) < 8:
         slug = "intel-" + hashlib.md5((link or title).encode()).hexdigest()[:8]
     return slug[:120]
@@ -232,17 +235,52 @@ def classify(title, text):
     return best if scores[best] else "research"
 
 
-def fetch_article(url):
+def is_safe_url(url):
     try:
-        r = session.get(url, timeout=20)
-        r.raise_for_status()
-        return trafilatura.extract(r.text) or ""
-    except requests.RequestException as e:
-        logger.warning(f"Failed to fetch article from {url}: {e}")
-        return ""
-    except Exception as e:
-        logger.error(f"Error processing {url}: {e}")
-        return ""
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            return False
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+
+        addr_info = socket.getaddrinfo(hostname, None)
+        for res in addr_info:
+            ip_str = res[4][0]
+            ip = ipaddress.ip_address(ip_str)
+            if not ip.is_global:
+                return False
+        return True
+    except Exception:
+        return False
+
+
+def fetch_article(url, max_redirects=5):
+    current_url = url
+    redirects = 0
+
+    while redirects <= max_redirects:
+        if not is_safe_url(current_url):
+            return ""
+
+        try:
+            r = session.get(current_url, timeout=20, allow_redirects=False)
+
+            if r.status_code in (301, 302, 303, 307, 308):
+                location = r.headers.get("Location")
+                if not location:
+                    break
+                # Handle relative redirects
+                current_url = urllib.parse.urljoin(current_url, location)
+                redirects += 1
+                continue
+
+            r.raise_for_status()
+            return trafilatura.extract(r.text) or ""
+        except Exception:
+            return ""
+
+    return ""
 
 
 def summarize(title, text):
@@ -254,7 +292,7 @@ def summarize(title, text):
                 model="llama-3.3-70b-versatile",
                 messages=[{
                     "role":"user",
-                    "content":f"Summarize in 3 concise paragraphs:\\nTitle:{title}\\n{text[:10000]}"
+                    "content":f"Summarize in 3 concise paragraphs:\nTitle:{title}\n{text[:10000]}"
                 }],
                 temperature=0.2,
                 max_tokens=400
@@ -265,7 +303,14 @@ def summarize(title, text):
     return text[:1000]
 
 
-def fetch_candidates(seen, checkpoints):
+def main():
+    print("Intel Balancer v4 Running")
+
+    seen = set(load_json(SEEN_FILE, []))
+    checkpoints = load_json(CHECKPOINT_FILE, {})
+
+    category_count = {k:0 for k in CATEGORY_KEYWORDS}
+
     candidates = []
 
     for feed_url in RSS_FEEDS:
@@ -274,7 +319,7 @@ def fetch_candidates(seen, checkpoints):
 
         for entry in feed.entries[:30]:
             link = entry.get("link")
-            title = entry.get("title","").strip()
+            title = entry.get("title","" ).strip()
             if not title or not link:
                 continue
 
@@ -307,10 +352,6 @@ def fetch_candidates(seen, checkpoints):
                 "hash": h,
             })
 
-    return candidates
-
-
-def filter_candidates(candidates, category_count):
     candidates.sort(key=lambda x: x["published"], reverse=True)
 
     selected = []
@@ -339,9 +380,6 @@ def filter_candidates(candidates, category_count):
         items_to_process.append(item)
         temp_category_count[cat] += 1 # Pre-increment to keep count accurate while pre-selecting
 
-    return items_to_process
-
-def write_posts(items_to_process, seen, checkpoints, category_count):
     def process_item(item):
         summary = summarize(item["title"], item["raw"])
         if not summary:
@@ -361,7 +399,7 @@ def write_posts(items_to_process, seen, checkpoints, category_count):
         path = CONTENT_DIR / f"{slug}.md"
 
         markdown = f"""---
-title: "{item['title'].replace('"', "'")}"
+title: "{item['title'].replace('\"', "'") }"
 date: {item['published'].isoformat()}
 draft: false
 categories:
@@ -386,29 +424,13 @@ Source: [{item['title']}]({item['link']})
 
         print(f"[{cat}] {path.name}")
 
-
-def main():
-    print("Intel Balancer v4 Running")
-
-    seen = set(load_json(SEEN_FILE, []))
-    checkpoints = load_json(CHECKPOINT_FILE, {})
-
-    category_count = {k:0 for k in CATEGORY_KEYWORDS}
-
-    candidates = fetch_candidates(seen, checkpoints)
-
-    items_to_process = filter_candidates(candidates, category_count)
-
-    write_posts(items_to_process, seen, checkpoints, category_count)
-
     save_json(SEEN_FILE, sorted(list(seen)))
     save_json(CHECKPOINT_FILE, checkpoints)
 
-    print("\\nFinal Category Balance:")
+    print("\nFinal Category Balance:")
     for k, v in category_count.items():
         print(k, v)
 
 
 if __name__ == "__main__":
     main()
-
