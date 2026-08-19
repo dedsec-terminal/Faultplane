@@ -1,6 +1,6 @@
-baseURL = "https://dedsec-terminal.github.io/"
+baseURL = "https://dedsec-terminal.github.io/faultplane/"
 languageCode = "en-us"
-title = "DedSec-Terminal"
+title = "Faultplane"
 theme = "PaperMod"
 
 enableRobotsTXT = true
