@@ -18,17 +18,26 @@ DATA_DIR = DIST_DIR / "data"
 
 POSTS_PER_PAGE = 20
 
+# ⚡ Bolt: Use C-based loader for PyYAML if available for significant performance boost
+try:
+    from yaml import CSafeLoader as Loader
+except ImportError:
+    from yaml import SafeLoader as Loader
+
 def parse_frontmatter(content):
     if content.startswith("---"):
         parts = content.split("---", 2)
         if len(parts) >= 3:
             try:
-                frontmatter = yaml.safe_load(parts[1]) or {}
+                frontmatter = yaml.load(parts[1], Loader=Loader) or {}
                 body = parts[2]
                 return frontmatter, body
             except Exception as e:
                 print(f"Error parsing frontmatter: {e}")
     return {}, content
+
+# ⚡ Bolt: Instantiate markdown object once globally instead of per-file to reduce initialization overhead
+md = markdown.Markdown(extensions=['extra', 'codehilite', 'sane_lists'])
 
 def load_markdown_files(directory):
     items = []
@@ -42,7 +51,8 @@ def load_markdown_files(directory):
         if frontmatter.get("draft", False):
             continue
             
-        html_body = markdown.markdown(body, extensions=['extra', 'codehilite', 'sane_lists'])
+        html_body = md.convert(body)
+        md.reset()
         
         slug = md_file.stem
         date_str = frontmatter.get("date", datetime.now().isoformat())
