@@ -12,10 +12,7 @@ import urllib.parse
 import feedparser
 import requests
 
-try:
-    from groq import Groq
-except ImportError:
-    Groq = None
+from groq_client import GroqClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -71,19 +68,18 @@ def generate_slug(title, date_str):
         
     return f"{date_prefix}-{clean_title}"
 
-VALID_CATEGORIES = {"threat-intel", "malware", "vulnerabilities", "cves", "data-breaches", "research", "campaigns", "other"}
-
-def ask_groq_for_structured_data(title, description, source, category):
-    api_key = os.getenv("GROQ_API_KEY")
-    if not Groq or not api_key:
-        return None
+def ask_groq_for_structured_data(groq_client, title, description, source, category):
+    # Trim description to save tokens (max 3000 chars)
+    clean_desc = re.sub(r'<[^>]+>', '', str(description))
+    if len(clean_desc) > 3000:
+        clean_desc = clean_desc[:3000] + "..."
         
     prompt = f"""You are a cybersecurity analyst. Read the following article title and description and generate a structured JSON response.
 Do NOT invent CVEs, threat actors, malware names, or details that are not in the text.
 Summarize the facts concisely.
 
 Article Title: {title}
-Article Description: {description}
+Article Description: {clean_desc}
 Original Source: {source}
 Fallback Category: {category}
 
@@ -95,31 +91,10 @@ Return ONLY valid JSON (no markdown wrapping) in this exact structure:
   "tags": ["tag1", "tag2"]
 }}"""
 
-    try:
-        client = Groq(api_key=api_key)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.1,
-            max_tokens=500,
-            response_format={"type": "json_object"}
-        )
-        
-        content = response.choices[0].message.content.strip()
-        parsed = json.loads(content)
-        
-        # Validation
-        if not parsed.get("summary") or not parsed.get("title"):
-            raise ValueError("Missing required fields in Groq JSON response.")
-            
-        if parsed.get("category") not in VALID_CATEGORIES:
-            logger.warning(f"Invalid category '{parsed.get('category')}' returned by Groq. Falling back to '{category}'.")
-            parsed["category"] = category
-            
-        return parsed
-    except Exception as e:
-        logger.warning(f"Groq API generation failed: {e}")
-        return None
+    parsed = groq_client.ask_groq_json(prompt, ["title", "summary"])
+    if parsed:
+        parsed["category"] = groq_client.validate_category(parsed.get("category", ""), category)
+    return parsed
 
 def fallback_summary(description):
     clean_desc = re.sub(r'<[^>]+>', '', str(description))
@@ -144,6 +119,12 @@ def fetch_feed(feed_config, session):
 
 def main():
     logger.info("Starting RSS Pipeline...")
+    
+    groq_client = GroqClient()
+    if not groq_client.validate_models():
+        logger.error("AI Configuration invalid or models unavailable. Aborting entire RSS batch.")
+        return
+
     feeds = load_feeds()
     state = load_state()
     seen_urls = set(state.get("seen_urls", []))
@@ -167,6 +148,7 @@ def main():
                 continue
                 
             norm_url = normalize_url(raw_url)
+            # DEDUPLICATION BEFORE GROQ
             if norm_url in seen_urls:
                 continue
                 
@@ -185,7 +167,7 @@ def main():
             logger.info(f"Processing new item: {raw_title}")
             
             # Use Groq for structured output
-            groq_data = ask_groq_for_structured_data(raw_title, raw_description, feed["name"], feed.get("category", "other"))
+            groq_data = ask_groq_for_structured_data(groq_client, raw_title, raw_description, feed["name"], feed.get("category", "other"))
             
             if groq_data:
                 final_title = groq_data.get("title", raw_title)

@@ -34,19 +34,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Ensure State Directory Exists
+      - name: Run Controlled Groq Test
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: openai/gpt-oss-20b
+          GROQ_FALLBACK_MODEL: llama-3.1-8b-instant
         run: |
-          mkdir -p data
+          python scripts/test_groq_pipeline.py
 
       - name: Run Intel Balancer (RSS Fetcher)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: openai/gpt-oss-20b
+          GROQ_FALLBACK_MODEL: llama-3.1-8b-instant
         run: |
           python scripts/rss_fetcher.py
 
       - name: Run CVE Fetcher (NVD + KEV)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: openai/gpt-oss-20b
+          GROQ_FALLBACK_MODEL: llama-3.1-8b-instant
         run: |
           python scripts/cve_fetcher.py
 

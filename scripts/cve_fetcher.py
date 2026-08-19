@@ -7,10 +7,7 @@ from datetime import datetime, timedelta, timezone
 import urllib.parse
 
 import requests
-try:
-    from groq import Groq
-except ImportError:
-    Groq = None
+from groq_client import GroqClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -38,18 +35,19 @@ def save_state(state):
     with open(STATE_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
 
-def ask_groq_for_cve_summary(cve_id, description, kev_status):
-    api_key = os.getenv("GROQ_API_KEY")
-    if not Groq or not api_key:
-        return None
-        
+def ask_groq_for_cve_summary(groq_client, cve_id, description, kev_status):
     kev_warning = "This CVE is actively exploited in the wild (CISA KEV)." if kev_status else "Not currently listed in CISA KEV."
+    
+    # Trim description to save tokens
+    clean_desc = str(description)
+    if len(clean_desc) > 3000:
+        clean_desc = clean_desc[:3000] + "..."
     
     prompt = f"""You are a cybersecurity analyst. Read the following CVE details and generate a structured JSON response with a plain-language summary and tags.
 Do NOT invent details. Ensure the summary is actionable and easy to understand.
 
 CVE ID: {cve_id}
-Original Description: {description}
+Original Description: {clean_desc}
 KEV Status: {kev_warning}
 
 Return ONLY valid JSON (no markdown wrapping) in this exact structure:
@@ -58,26 +56,7 @@ Return ONLY valid JSON (no markdown wrapping) in this exact structure:
   "tags": ["tag1", "tag2"]
 }}"""
 
-    try:
-        client = Groq(api_key=api_key)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.1,
-            max_tokens=500,
-            response_format={"type": "json_object"}
-        )
-        
-        content = response.choices[0].message.content.strip()
-        parsed = json.loads(content)
-        
-        if not parsed.get("summary"):
-            raise ValueError("Missing required summary field in Groq JSON response.")
-            
-        return parsed
-    except Exception as e:
-        logger.warning(f"Groq API generation failed for CVE {cve_id}: {e}")
-        return None
+    return groq_client.ask_groq_json(prompt, ["summary"])
 
 def extract_nvd_metadata(cve_item):
     cve_data = cve_item.get("cve", {})
@@ -113,6 +92,12 @@ def extract_nvd_metadata(cve_item):
 
 def main():
     logger.info("Starting Two-Source CVE Pipeline...")
+    
+    groq_client = GroqClient()
+    if not groq_client.validate_models():
+        logger.error("AI Configuration invalid or models unavailable. Aborting CVE pipeline.")
+        return
+
     state = load_state()
     seen_cves = state.get("seen_cves", {}) # Map of cve_id -> modified_date
     last_run = state.get("last_run")
@@ -199,7 +184,7 @@ def main():
         kev_status = bool(kev_date)
         
         # Groq Summarization
-        groq_data = ask_groq_for_cve_summary(cve_id, meta["description"], kev_status)
+        groq_data = ask_groq_for_cve_summary(groq_client, cve_id, meta["description"], kev_status)
         
         if groq_data:
             summary = groq_data.get("summary", meta["description"])
