@@ -9,3 +9,4 @@ jinja2
 lxml
 beautifulsoup4
 pyahocorasick
+python-dotenv
