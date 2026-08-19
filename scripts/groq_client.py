@@ -73,7 +73,7 @@ class GroqClient:
             
         return "other"
 
-    def ask_groq_json(self, prompt, required_fields):
+    def ask_groq_json(self, system_prompt, user_prompt, required_fields, retry_on_400=True):
         if not self.client or not self.active_model:
             return None
             
@@ -84,9 +84,12 @@ class GroqClient:
             try:
                 response = self.client.chat.completions.create(
                     model=current_model,
-                    messages=[{"role": "user", "content": prompt}],
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
                     temperature=0.1,
-                    max_tokens=500,
+                    max_tokens=800,
                     response_format={"type": "json_object"}
                 )
                 
@@ -100,6 +103,21 @@ class GroqClient:
                         
                 return parsed
                 
+            except groq.BadRequestError as e:
+                err_msg = str(e)
+                if "json_validate_failed" in err_msg or "Failed to validate JSON" in err_msg or "Failed to generate JSON" in err_msg:
+                    logger.warning(f"Groq API JSON validation failed (400).")
+                    if retry_on_400:
+                        logger.warning("Retrying with a simpler JSON prompt (once)...")
+                        simplified_system = system_prompt + "\n\nCRITICAL: Return ONLY a valid JSON object. No markdown, no reasoning, no extra text. Do not exceed maximum tokens."
+                        return self.ask_groq_json(simplified_system, user_prompt, required_fields, retry_on_400=False)
+                    else:
+                        logger.error("JSON validation failed again on retry. Aborting for this item.")
+                        return None
+                else:
+                    logger.warning(f"Groq API Bad Request (400): {e}")
+                    return None
+                    
             except groq.RateLimitError as e:
                 logger.warning(f"Groq API rate limit (429) hit. Retrying {attempt+1}/{max_retries}...")
                 time.sleep(5 * (attempt + 1))
@@ -113,7 +131,7 @@ class GroqClient:
                     self.active_model = self.fallback_model
                     continue
                 else:
-                    logger.error("Fallback model also not found. Aborting for this article.")
+                    logger.error("Fallback model also not found. Aborting for this item.")
                     return None
                     
             except Exception as e:

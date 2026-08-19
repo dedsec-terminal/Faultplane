@@ -43,20 +43,24 @@ def ask_groq_for_cve_summary(groq_client, cve_id, description, kev_status):
     if len(clean_desc) > 3000:
         clean_desc = clean_desc[:3000] + "..."
     
-    prompt = f"""You are a cybersecurity analyst. Read the following CVE details and generate a structured JSON response with a plain-language summary and tags.
-Do NOT invent details. Ensure the summary is actionable and easy to understand.
+    system_prompt = """You are a cybersecurity intelligence summarizer.
+Return ONLY the requested JSON object.
+Summarize the supplied CVE details accurately.
+Do not invent facts.
+Keep the summary concise.
+Return no Markdown, explanation, reasoning, or additional text.
 
-CVE ID: {cve_id}
-Original Description: {clean_desc}
-KEV Status: {kev_warning}
-
-Return ONLY valid JSON (no markdown wrapping) in this exact structure:
-{{
-  "summary": "A 1-2 paragraph professional impact summary and plain-language explanation.",
+JSON Schema (Strictly required):
+{
+  "summary": "Concise professional impact summary (max 700 chars)",
   "tags": ["tag1", "tag2"]
-}}"""
+}"""
 
-    return groq_client.ask_groq_json(prompt, ["summary"])
+    user_prompt = f"""CVE ID: {cve_id}
+Original Description: {clean_desc}
+KEV Status: {kev_warning}"""
+
+    return groq_client.ask_groq_json(system_prompt, user_prompt, ["summary"])
 
 def extract_nvd_metadata(cve_item):
     cve_data = cve_item.get("cve", {})
