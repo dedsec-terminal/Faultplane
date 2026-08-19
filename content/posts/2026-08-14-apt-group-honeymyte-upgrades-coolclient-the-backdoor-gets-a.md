@@ -4,13 +4,17 @@ description: "Our experts discovered a new CoolClient backdoor variant with a ke
 source: "Securelist"
 source_url: "https://securelist.com/honeymyte-coolclient-driver-rootkit/121028/"
 date: "2026-08-14T09:00:14+00:00"
-category: "threat-intel"
+category: "malware"
 tags:
-  - "threat-intel"
+  - "APT"
+  - "HoneyMyte"
+  - "CoolClient"
+  - "kernel-rootkit"
+  - "Windows"
+  - "backdoor"
 slug: "2026-08-14-apt-group-honeymyte-upgrades-coolclient-the-backdoor-gets-a"
+quote: "Fate is in your hands and no one elses"
+quote_author: "Byron Pulsifer"
 ---
 
 Our experts discovered a new CoolClient backdoor variant with a kernel-mode rootkit driver that hides malicious processes, files, and network connections from security tools and threat analysts.
-
----
-**Source:** [Securelist](https://securelist.com/honeymyte-coolclient-driver-rootkit/121028/)

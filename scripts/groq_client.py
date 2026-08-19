@@ -21,7 +21,7 @@ class GroqClient:
     def __init__(self):
         self.api_key = os.getenv("GROQ_API_KEY")
         self.primary_model = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
-        self.fallback_model = os.getenv("GROQ_FALLBACK_MODEL", "llama-3.1-8b-instant")
+        self.fallback_model = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-120b")
         self.active_model = None
         self.client = None
 
@@ -48,6 +48,9 @@ class GroqClient:
                 if self.fallback_model in models:
                     logger.info(f"Fallback Groq model '{self.fallback_model}' is available.")
                     self.active_model = self.fallback_model
+                elif "qwen/qwen3.6-27b" in models:
+                    self.active_model = "qwen/qwen3.6-27b"
+                    logger.info(f"Using fallback model 'qwen/qwen3.6-27b'.")
                 else:
                     logger.error("Neither primary nor fallback Groq models are available. Aborting AI pipeline.")
                     return False
@@ -92,7 +95,7 @@ class GroqClient:
                         {"role": "user", "content": user_prompt}
                     ],
                     temperature=0.1,
-                    max_tokens=800,
+                    max_tokens=2500,
                     response_format={"type": "json_object"}
                 )
                 
@@ -111,8 +114,8 @@ class GroqClient:
                 if "json_validate_failed" in err_msg or "Failed to validate JSON" in err_msg or "Failed to generate JSON" in err_msg:
                     logger.warning(f"Groq API JSON validation failed (400).")
                     if retry_on_400:
-                        logger.warning("Retrying with a simpler JSON prompt (once)...")
-                        simplified_system = system_prompt + "\n\nCRITICAL: Return ONLY a valid JSON object. No markdown, no reasoning, no extra text. Do not exceed maximum tokens."
+                        logger.warning("Retrying with a simpler prompt (once)...")
+                        simplified_system = "You are a cybersecurity summarizer. Output a concise JSON object with the requested fields. Keep summaries short."
                         return self.ask_groq_json(simplified_system, user_prompt, required_fields, retry_on_400=False)
                     else:
                         logger.error("JSON validation failed again on retry. Aborting for this item.")

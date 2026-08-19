@@ -1,16 +1,19 @@
 ---
 title: "Microsoft Plugs Nearly 400 Security Holes"
-description: "Microsoft today released updates to remedy at least 398 security vulnerabilities in its Windows operating systems and supported software, including on..."
+description: "Microsoft released security updates that address at least 398 vulnerabilities in Windows operating systems and related software. The patch set include..."
 source: "Krebs on Security"
 source_url: "https://krebsonsecurity.com/2026/08/microsoft-plugs-nearly-400-security-holes/"
 date: "2026-08-11T21:28:35+00:00"
 category: "threat-intel"
 tags:
-  - "threat-intel"
+  - "Microsoft"
+  - "Windows"
+  - "security patches"
+  - "vulnerabilities"
+  - "active exploitation"
 slug: "2026-08-11-microsoft-plugs-nearly-400-security-holes"
+quote: "These days people seek knowledge, not wisdom. Knowledge is of the past, wisdom is of the future."
+quote_author: "Vernon Cooper"
 ---
 
-Microsoft today released updates to remedy at least 398 security vulnerabilities in its Windows operating systems and supported software, including one weakness that is already being actively exploited and two others that were publicly detailed prior to today.
-
----
-**Source:** [Krebs on Security](https://krebsonsecurity.com/2026/08/microsoft-plugs-nearly-400-security-holes/)
+Microsoft released security updates that address at least 398 vulnerabilities in Windows operating systems and related software. The patch set includes one flaw that is already being actively exploited, as well as two other weaknesses that had been publicly disclosed earlier. The updates aim to close these security gaps and mitigate potential exploitation.

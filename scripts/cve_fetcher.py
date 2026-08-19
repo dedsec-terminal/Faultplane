@@ -39,19 +39,12 @@ def save_state(state):
 def ask_groq_for_cve_summary(groq_client, cve_id, description, kev_status):
     kev_warning = "This CVE is actively exploited in the wild (CISA KEV)." if kev_status else "Not currently listed in CISA KEV."
     
-    # Trim description to save tokens
     clean_desc = str(description)
     if len(clean_desc) > 3000:
         clean_desc = clean_desc[:3000] + "..."
     
     system_prompt = """You are a cybersecurity intelligence summarizer.
-Return ONLY the requested JSON object.
-Summarize the supplied CVE details accurately.
-Do not invent facts.
-Keep the summary concise.
-Return no Markdown, explanation, reasoning, or additional text.
-
-JSON Schema (Strictly required):
+Return ONLY a valid JSON object with the following keys:
 {
   "summary": "Concise professional impact summary (max 700 chars)",
   "tags": ["tag1", "tag2"]
@@ -99,16 +92,16 @@ def main():
     logger.info("Starting Two-Source CVE Pipeline...")
     
     groq_client = GroqClient()
-    if not groq_client.validate_models():
-        logger.error("AI Configuration invalid or models unavailable. Aborting CVE pipeline.")
-        return
+    ai_available = groq_client.validate_models()
+    if not ai_available:
+        logger.warning("AI Configuration unavailable. Falling back to raw CVE descriptions.")
 
     state = load_state()
-    seen_cves = state.get("seen_cves", {}) # Map of cve_id -> modified_date
+    seen_cves = state.get("seen_cves", {})
     last_run = state.get("last_run")
     
     session = requests.Session()
-    session.headers.update({"User-Agent": "Faultplane-CVE-Fetcher/1.0"})
+    session.headers.update({"User-Agent": "Mozilla/5.0 Faultplane-CVE-Fetcher/1.0"})
     
     # 1. Fetch CISA KEV Enrichment Data
     kev_dict = {}
@@ -122,37 +115,30 @@ def main():
                 kev_dict[vuln["cveID"]] = vuln.get("dateAdded", "")
     except Exception as e:
         logger.error(f"Failed to fetch CISA KEV JSON: {e}")
-        # Proceed anyway, we just won't have KEV enrichment for this run
         
     # 2. Fetch NVD Data
     now = datetime.now(timezone.utc)
-    # If no last run, fetch last 12 hours
     if not last_run:
         start_date = now - timedelta(hours=12)
     else:
         try:
             start_date = datetime.fromisoformat(last_run)
-            # Ensure we don't query more than 120 days (NVD limit)
             if (now - start_date).days > 90:
                 start_date = now - timedelta(days=30)
         except ValueError:
             start_date = now - timedelta(hours=12)
             
-    # Format for NVD API: YYYY-MM-DDTHH:MM:SS.000%2B00:00 or .000Z
-    # We must use EXACTLY this format, urlencoded. Wait, requests handles URL encoding.
-    # NVD API expects the timezone offset to be urlencoded if using +00:00, or just Z.
     start_str = start_date.strftime("%Y-%m-%dT%H:%M:%S.000")
     end_str = now.strftime("%Y-%m-%dT%H:%M:%S.000")
     
     params = {
         "lastModStartDate": start_str,
         "lastModEndDate": end_str,
-        "resultsPerPage": 50 # Limit to 50 to avoid timeout/large processing
+        "resultsPerPage": 30
     }
     
     logger.info(f"Fetching NVD modified CVEs from {start_str} to {end_str}...")
     try:
-        # We may need api key to avoid rate limiting, but we try without it first.
         nvd_response = session.get(NVD_URL, params=params, timeout=30)
         if nvd_response.status_code == 403:
              logger.warning("NVD API rate limited (403). Waiting 10s and retrying...")
@@ -170,26 +156,25 @@ def main():
     processed_count = 0
     
     for item in nvd_items:
-        if processed_count >= 10: # Limit Groq calls per run
+        if processed_count >= 8:
             logger.info("Reached maximum CVE processing limit for this run.")
             break
             
         meta = extract_nvd_metadata(item)
         cve_id = meta["id"]
         
-        # Deduplication / Modification Check
         last_modified = meta["modified"]
         if cve_id in seen_cves and seen_cves[cve_id] == last_modified:
-            continue # No change
+            continue
             
         logger.info(f"Processing CVE: {cve_id}")
         
-        # Enrichment
         kev_date = kev_dict.get(cve_id)
         kev_status = bool(kev_date)
         
-        # Groq Summarization
-        groq_data = ask_groq_for_cve_summary(groq_client, cve_id, meta["description"], kev_status)
+        groq_data = None
+        if ai_available:
+            groq_data = ask_groq_for_cve_summary(groq_client, cve_id, meta["description"], kev_status)
         
         if groq_data:
             summary = groq_data.get("summary", meta["description"])
@@ -200,7 +185,6 @@ def main():
             
         tags_yaml = "\n".join([f'  - "{t}"' for t in tags])
         
-        # Format dates for frontmatter
         try:
             pub_dt = datetime.fromisoformat(meta["published"].replace("Z", "+00:00"))
             fmt_date = pub_dt.isoformat()
@@ -213,23 +197,23 @@ def main():
             
         q_data = get_random_quote()
         quote_text = q_data.get("quote", "").replace('"', "'").replace('\n', ' ')
-        quote_author = q_data.get("author", "").replace('"', "'").replace('\n', ' ')
+        quote_author = q_data.get("author", "Unknown").replace('"', "'").replace('\n', ' ')
             
         md_content = f"""---
-title: "{cve_id}"
-description: "{summary[:150].replace('"', "'")}..."
+title: {json.dumps(cve_id)}
+description: {json.dumps(summary[:150] + "...")}
 source: "NVD"
 source_url: "https://nvd.nist.gov/vuln/detail/{cve_id}"
-date: "{fmt_date}"
+date: {json.dumps(fmt_date)}
 category: "cves"
-cve: "{cve_id}"
-cvss: "{meta['cvss']}"
-severity: "{meta['severity']}"
+cve: {json.dumps(cve_id)}
+cvss: {json.dumps(str(meta['cvss']))}
+severity: {json.dumps(str(meta['severity']))}
 {kev_yaml}tags:
 {tags_yaml}
-slug: "{cve_id.lower()}"
-quote: "{quote_text}"
-quote_author: "{quote_author}"
+slug: {json.dumps(cve_id.lower())}
+quote: {json.dumps(quote_text)}
+quote_author: {json.dumps(quote_author)}
 ---
 
 ### Executive Summary
@@ -254,11 +238,11 @@ quote_author: "{quote_author}"
         except Exception as e:
             logger.error(f"Failed to write file {filepath}: {e}")
             
-        time.sleep(1) # Rate limit Groq
+        if ai_available:
+            time.sleep(1.5)
             
     # Update state
     state["seen_cves"] = seen_cves
-    # Instead of setting last_run to exactly now, set it a bit earlier to avoid timezone drift misses
     state["last_run"] = (now - timedelta(minutes=5)).isoformat()
     save_state(state)
     logger.info(f"CVE Pipeline finished. Processed {processed_count} CVEs.")

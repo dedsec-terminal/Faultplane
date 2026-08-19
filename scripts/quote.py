@@ -6,7 +6,6 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
-# Assume data dir is one level up from scripts
 DATA_DIR = BASE_DIR.parent / "data"
 QUOTES_FILE = DATA_DIR / "quotes.json"
 
@@ -31,13 +30,15 @@ def load_quotes():
                         )
                         author = (
                             item.get("author") or item.get("by") or 
-                            item.get("source") or item.get("quoteAuthor") or "Unknown"
+                            item.get("source") or item.get("quoteAuthor")
                         )
                         
-                        if quote_text:
+                        if quote_text and quote_text.strip():
+                            clean_quote = quote_text.strip()
+                            clean_author = author.strip() if (author and author.strip()) else "Unknown"
                             quotes.append({
-                                "quote": quote_text.strip(),
-                                "author": author.strip()
+                                "quote": clean_quote,
+                                "author": clean_author
                             })
                             
     except Exception as e:

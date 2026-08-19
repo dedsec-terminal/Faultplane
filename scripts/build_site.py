@@ -23,7 +23,7 @@ def parse_frontmatter(content):
         parts = content.split("---", 2)
         if len(parts) >= 3:
             try:
-                frontmatter = yaml.safe_load(parts[1])
+                frontmatter = yaml.safe_load(parts[1]) or {}
                 body = parts[2]
                 return frontmatter, body
             except Exception as e:
@@ -50,26 +50,34 @@ def load_markdown_files(directory):
             date_str = date_str.isoformat()
             
         try:
-            parsed_date = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+            parsed_date = datetime.fromisoformat(str(date_str).replace("Z", "+00:00"))
             formatted_date = parsed_date.strftime("%Y-%m-%d %H:%M")
         except ValueError:
             formatted_date = str(date_str)
             
-        # Parse Category correctly based strictly on 'category' frontmatter (not tags)
-        category = frontmatter.get("category", "other").lower().strip()
+        category = str(frontmatter.get("category", "other")).lower().strip()
         tags = frontmatter.get("tags", [])
+
+        # Persistent quote from frontmatter with fallback if missing
+        quote = frontmatter.get("quote")
+        quote_author = frontmatter.get("quote_author")
+        if not quote:
+            from quote import get_random_quote
+            fallback_q = get_random_quote()
+            quote = fallback_q.get("quote")
+            quote_author = fallback_q.get("author", "Unknown")
 
         item = {
             "title": frontmatter.get("title", "Untitled"),
-            "date": date_str,
+            "date": str(date_str),
             "formatted_date": formatted_date,
             "category": category,
             "tags": tags,
             "slug": slug,
             "body": html_body,
             "type": "post" if directory == POSTS_DIR else "cve",
-            "quote": frontmatter.get("quote"),
-            "quote_author": frontmatter.get("quote_author"),
+            "quote": quote,
+            "quote_author": quote_author or "Unknown",
             "source": frontmatter.get("source"),
             "source_url": frontmatter.get("source_url")
         }
@@ -142,7 +150,7 @@ def build_site():
         quote_html = ""
         if item.get("quote"):
             author = item.get("quote_author") or "Unknown"
-            quote_html = f'\n<blockquote class="post-quote"><p>{item["quote"]}</p><cite>&mdash; {author}</cite></blockquote>\n'
+            quote_html = f'\n<blockquote class="post-quote"><p>"{item["quote"]}"</p><cite>&mdash; {author}</cite></blockquote>\n'
             
         source_html = ""
         if item.get("source_url"):
@@ -186,6 +194,8 @@ def build_site():
             page_posts = post_list[start_idx:end_idx]
             
             feed_html = '<ul class="post-list">'
+            if not page_posts:
+                feed_html += '<li class="empty-state">No articles found in this category.</li>'
             for p in page_posts:
                 feed_html += f'<li><span class="post-meta">{p["formatted_date"]}</span> <a href="{p["url"]}">{p["title"]}</a></li>\n'
             feed_html += '</ul>'
@@ -216,9 +226,16 @@ def build_site():
     # Generate CVE Index
     generate_paginated_index(cves, "/Faultplane/cves/index", "Latest Vulnerabilities (CVEs)", DIST_DIR / "cves")
     
-    # Generate Category indexes (Fixes the Malware 404)
+    # Generate Category indexes (Threat Intel, Malware, Data Breaches, Research, etc.)
+    # Guarantee the core categories exist even if empty
+    core_categories = ["threat-intel", "malware", "data-breaches", "research", "cves"]
+    for core_cat in core_categories:
+        if core_cat not in category_map:
+            category_map[core_cat] = []
+            
     for cat, cat_items in category_map.items():
-        generate_paginated_index(cat_items, f"/Faultplane/categories/{cat}", f"Category: {cat}", DIST_DIR / "categories", filename_base=cat)
+        pretty_title = cat.replace("-", " ").title()
+        generate_paginated_index(cat_items, f"/Faultplane/categories/{cat}", f"Category: {pretty_title}", DIST_DIR / "categories", filename_base=cat)
 
     # Generate custom Landing Page (index.html)
     def render_list(items, limit=4):

@@ -56,13 +56,13 @@ def normalize_url(url):
     return urllib.parse.urlunparse(parsed)
 
 def generate_slug(title, date_str):
-    clean_title = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+    clean_title = re.sub(r'[^a-z0-9]+', '-', str(title).lower()).strip('-')
     if len(clean_title) > 60:
         clean_title = clean_title[:60].strip('-')
     
     date_prefix = "unknown"
     try:
-        dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+        dt = datetime.fromisoformat(str(date_str).replace('Z', '+00:00'))
         date_prefix = dt.strftime("%Y-%m-%d")
     except ValueError:
         pass
@@ -70,20 +70,12 @@ def generate_slug(title, date_str):
     return f"{date_prefix}-{clean_title}"
 
 def ask_groq_for_structured_data(groq_client, title, description, source, category):
-    # Trim description to save tokens (max 3000 chars)
     clean_desc = re.sub(r'<[^>]+>', '', str(description))
     if len(clean_desc) > 3000:
         clean_desc = clean_desc[:3000] + "..."
         
     system_prompt = """You are a cybersecurity intelligence summarizer.
-Return ONLY the requested JSON object.
-Summarize the supplied article accurately.
-Do not invent facts.
-Keep the summary concise.
-Choose exactly one category from the provided taxonomy.
-Return no Markdown, explanation, reasoning, or additional text.
-
-JSON Schema (Strictly required):
+Return ONLY a valid JSON object with the following keys:
 {
   "title": "Normalized title string (max 120 chars)",
   "summary": "Concise factual summary (max 600 chars)",
@@ -103,9 +95,10 @@ Fallback Category: {category}"""
 
 def fallback_summary(description):
     clean_desc = re.sub(r'<[^>]+>', '', str(description))
+    clean_desc = ' '.join(clean_desc.split())
     if len(clean_desc) > 500:
         clean_desc = clean_desc[:497] + "..."
-    return clean_desc
+    return clean_desc or "No description provided."
 
 def fetch_feed(feed_config, session):
     url = feed_config.get("url")
@@ -126,16 +119,16 @@ def main():
     logger.info("Starting RSS Pipeline...")
     
     groq_client = GroqClient()
-    if not groq_client.validate_models():
-        logger.error("AI Configuration invalid or models unavailable. Aborting entire RSS batch.")
-        return
+    ai_available = groq_client.validate_models()
+    if not ai_available:
+        logger.warning("AI Configuration unavailable. Falling back to rule-based ingestion.")
 
     feeds = load_feeds()
     state = load_state()
     seen_urls = set(state.get("seen_urls", []))
     
     session = requests.Session()
-    session.headers.update({"User-Agent": "Faultplane-RSS/1.0"})
+    session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Faultplane-RSS/1.0"})
     
     new_items = []
     
@@ -146,14 +139,13 @@ def main():
         entries = fetch_feed(feed, session)
         added_count = 0
         
-        # We only process up to 5 items per feed per run to conserve Groq tokens
-        for entry in entries[:5]:
+        # Process up to 3 items per feed per run to balance coverage across categories
+        for entry in entries[:3]:
             raw_url = entry.get("link", "")
             if not raw_url:
                 continue
                 
             norm_url = normalize_url(raw_url)
-            # DEDUPLICATION BEFORE GROQ
             if norm_url in seen_urls:
                 continue
                 
@@ -171,8 +163,9 @@ def main():
             
             logger.info(f"Processing new item: {raw_title}")
             
-            # Use Groq for structured output
-            groq_data = ask_groq_for_structured_data(groq_client, raw_title, raw_description, feed["name"], feed.get("category", "other"))
+            groq_data = None
+            if ai_available:
+                groq_data = ask_groq_for_structured_data(groq_client, raw_title, raw_description, feed["name"], feed.get("category", "other"))
             
             if groq_data:
                 final_title = groq_data.get("title", raw_title)
@@ -202,30 +195,31 @@ def main():
             seen_urls.add(norm_url)
             added_count += 1
             
-            # Rate limit Groq calls if making many
-            time.sleep(1)
+            # Gentle delay to prevent 429 rate limits
+            if ai_available:
+                time.sleep(1.5)
             
         logger.info(f"  -> Added {added_count} new items from {feed['name']}")
         
-    # Write new items to markdown safely
+    # Write new items to markdown with persistent quote
     for item in new_items:
         tags_yaml = "\n".join([f'  - "{t}"' for t in item['tags']])
         q_data = get_random_quote()
         quote_text = q_data.get("quote", "").replace('"', "'").replace('\n', ' ')
-        quote_author = q_data.get("author", "").replace('"', "'").replace('\n', ' ')
+        quote_author = q_data.get("author", "Unknown").replace('"', "'").replace('\n', ' ')
         
         md_content = f"""---
-title: "{item['title'].replace('"', "'")}"
-description: "{item['description'].replace('"', "'")}"
-source: "{item['source']}"
-source_url: "{item['source_url']}"
-date: "{item['published']}"
-category: "{item['category']}"
+title: {json.dumps(item['title'])}
+description: {json.dumps(item['description'])}
+source: {json.dumps(item['source'])}
+source_url: {json.dumps(item['source_url'])}
+date: {json.dumps(item['published'])}
+category: {json.dumps(item['category'])}
 tags:
 {tags_yaml}
-slug: "{item['slug']}"
-quote: "{quote_text}"
-quote_author: "{quote_author}"
+slug: {json.dumps(item['slug'])}
+quote: {json.dumps(quote_text)}
+quote_author: {json.dumps(quote_author)}
 ---
 
 {item['summary']}

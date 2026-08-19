@@ -2,28 +2,30 @@
   "threat-intel": [
     "https://feeds.feedburner.com/TheHackersNews",
     "https://krebsonsecurity.com/feed/",
-    "https://www.bleepingcomputer.com/feed/"
-  ],
-
-  "data-breaches": [
     "https://www.bleepingcomputer.com/feed/",
-    "https://krebsonsecurity.com/feed/"
+    "https://www.schneier.com/feed/atom/",
+    "https://www.microsoft.com/en-us/security/blog/feed/",
+    "https://isc.sans.edu/rssfeed.xml",
+    "https://redcanary.com/blog/feed/"
   ],
-
-  "cves": [
-    "https://www.cisa.gov/cybersecurity-advisories/all.xml",
-    "https://www.zerodayinitiative.com/rss/published/"
-  ],
-
   "malware": [
     "https://securelist.com/feed/",
-    "https://www.bleepingcomputer.com/feed/",
-    "https://www.microsoft.com/en-us/security/blog/feed/"
+    "https://www.sentinelone.com/labs/feed/",
+    "https://www.malwarebytes.com/blog/feed/index.xml"
   ],
-
+  "data-breaches": [
+    "https://databreaches.net/feed/",
+    "https://www.troyhunt.com/rss/"
+  ],
   "research": [
-    "https://www.schneier.com/feed/atom/",
-    "https://www.wired.com/feed/category/security/rss",
-    "https://www.vice.com/en/rss/topic/tech"
+    "https://blog.talosintelligence.com/rss/",
+    "https://unit42.paloaltonetworks.com/feed/",
+    "https://googleprojectzero.blogspot.com/feeds/posts/default",
+    "https://portswigger.net/research/rss",
+    "https://blog.trailofbits.com/feed/"
+  ],
+  "cves": [
+    "https://www.zerodayinitiative.com/rss/published/",
+    "https://www.cisa.gov/cybersecurity-advisories/all.xml"
   ]
 }

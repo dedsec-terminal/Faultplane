@@ -1,73 +1,101 @@
+# Faultplane RSS Feed Sources Configuration
+
+# Threat Intelligence
 - name: The Hacker News
   url: https://feeds.feedburner.com/TheHackersNews
   category: threat-intel
   enabled: true
+
 - name: Krebs on Security
   url: https://krebsonsecurity.com/feed/
   category: threat-intel
   enabled: true
+
 - name: Bleeping Computer
   url: https://www.bleepingcomputer.com/feed/
   category: threat-intel
   enabled: true
-- name: Securelist
-  url: https://securelist.com/feed/
-  category: threat-intel
-  enabled: true
+
 - name: Schneier on Security
   url: https://www.schneier.com/feed/atom/
   category: threat-intel
   enabled: true
-- name: Wired Security
-  url: https://www.wired.com/feed/category/security/rss
+
+- name: Microsoft Security
+  url: https://www.microsoft.com/en-us/security/blog/feed/
   category: threat-intel
   enabled: true
+
+- name: SANS Internet Storm Center
+  url: https://isc.sans.edu/rssfeed.xml
+  category: threat-intel
+  enabled: true
+
+- name: Red Canary
+  url: https://redcanary.com/blog/feed/
+  category: threat-intel
+  enabled: true
+
+# Malware & Threat Actors
+- name: Securelist
+  url: https://securelist.com/feed/
+  category: malware
+  enabled: true
+
+- name: SentinelOne Labs
+  url: https://www.sentinelone.com/labs/feed/
+  category: malware
+  enabled: true
+
+- name: Malwarebytes Labs
+  url: https://www.malwarebytes.com/blog/feed/index.xml
+  category: malware
+  enabled: true
+
+# Data Breaches & Leaks
 - name: DataBreaches.net
   url: https://databreaches.net/feed/
   category: data-breaches
   enabled: true
-- name: CISA Cyber Advisories
-  url: https://www.cisa.gov/cybersecurity-advisories/all.xml
-  category: cves
+
+- name: Troy Hunt (Have I Been Pwned)
+  url: https://www.troyhunt.com/rss/
+  category: data-breaches
   enabled: true
-- name: CISA Alerts
-  url: https://www.cisa.gov/uscert/ncas/alerts.xml
-  category: cves
-  enabled: true
-- name: Zero Day Initiative
-  url: https://www.zerodayinitiative.com/rss/published/
-  category: cves
-  enabled: true
-- name: NVD CVEs
-  url: https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml
-  category: cves
-  enabled: false # NVD deprecated their XML data feeds in early 2024. Use the 2.0 API instead.
+
+# Security Research & Exploits
 - name: Cisco Talos
   url: https://blog.talosintelligence.com/rss/
   category: research
   enabled: true
+
 - name: Unit 42 (Palo Alto)
   url: https://unit42.paloaltonetworks.com/feed/
   category: research
   enabled: true
-- name: Google Cloud Threat Intel
-  url: https://cloud.google.com/blog/topics/threat-intelligence/rss/
-  category: threat-intel
-  enabled: true
-- name: Dark Reading
-  url: https://www.darkreading.com/rss.xml
-  category: threat-intel
-  enabled: true
-- name: Security Week
-  url: https://www.securityweek.com/feed/
-  category: threat-intel
-  enabled: true
-- name: Help Net Security
-  url: https://www.helpnetsecurity.com/feed/
-  category: threat-intel
-  enabled: true
-- name: DDoSecrets
-  url: https://torrents.ddosecrets.org/releases.xml
-  category: data-breaches
+
+- name: Google Project Zero
+  url: https://googleprojectzero.blogspot.com/feeds/posts/default
+  category: research
   enabled: true
 
+- name: PortSwigger Research
+  url: https://portswigger.net/research/rss
+  category: research
+  enabled: true
+
+- name: Trail of Bits
+  url: https://blog.trailofbits.com/feed/
+  category: research
+  enabled: true
+
+# Vulnerabilities & Advisories (CVEs)
+- name: Zero Day Initiative
+  url: https://www.zerodayinitiative.com/rss/published/
+  category: cves
+  enabled: true
+
+- name: CISA Cyber Advisories
+  url: https://www.cisa.gov/cybersecurity-advisories/all.xml
+  category: cves
+  enabled: true

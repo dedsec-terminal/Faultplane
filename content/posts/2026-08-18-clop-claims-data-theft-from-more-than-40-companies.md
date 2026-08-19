@@ -1,17 +1,19 @@
 ---
 title: "Clop Claims Data Theft From More Than 40 Companies"
-description: "Tiffany Wang reports: A prolific Russian-speaking extortion group known for supply-chain attacks claimed to have stolen data from more than 40 firms i..."
+description: "A Russian\u2011speaking extortion group, Clop, announced it stole data from over 40 firms, including major corporations such as Shell, General Electric, an..."
 source: "DataBreaches.net"
 source_url: "https://databreaches.net/2026/08/18/clop-claims-data-theft-from-more-than-40-companies/"
 date: "2026-08-18T20:21:07+00:00"
 category: "data-breaches"
 tags:
-  - "data-breaches"
+  - "clop"
+  - "data-theft"
+  - "supply-chain"
+  - "extortion"
+  - "Russian-speaking"
 slug: "2026-08-18-clop-claims-data-theft-from-more-than-40-companies"
+quote: "Act as if what you do makes a difference. It does."
+quote_author: "William James"
 ---
 
-Tiffany Wang reports: A prolific Russian-speaking extortion group known for supply-chain attacks claimed to have stolen data from more than 40 firms including heavyweight corporations such as oil giant Shell and manufacturer General Electric. The group, Clop, is the main suspect behind a July attack against product life cycle management software from PTC (see: Clop Tied...
-Source
-
----
-**Source:** [DataBreaches.net](https://databreaches.net/2026/08/18/clop-claims-data-theft-from-more-than-40-companies/)
+A Russian‑speaking extortion group, Clop, announced it stole data from over 40 firms, including major corporations such as Shell, General Electric, and PTC’s product lifecycle management software. The group is known for supply‑chain attacks and is the primary suspect in the July breach of PTC’s software.

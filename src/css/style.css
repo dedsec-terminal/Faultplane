@@ -197,22 +197,31 @@ a:hover {
     color: #D4D4D4;
 }
 
-.post-body blockquote {
+.post-body blockquote,
+.post-quote {
     border-left: 3px solid var(--accent);
-    padding-left: 1.5rem;
+    padding: 1.25rem 1.5rem;
     margin: 2rem 0;
     color: var(--text-secondary);
     font-style: italic;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0 4px 4px 0;
+}
+
+.post-quote p {
+    margin-bottom: 0.5rem;
+    color: #E5E5E5;
+    line-height: 1.6;
 }
 
 .post-quote cite {
     display: block;
     margin-top: 0.75rem;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-weight: 600;
 }
 
 .post-source {
