@@ -155,9 +155,15 @@ def main():
             published_parsed = entry.get("published_parsed") or entry.get("updated_parsed")
             if published_parsed:
                 dt = datetime(*published_parsed[:6], tzinfo=timezone.utc)
-                date_str = dt.isoformat()
+                orig_date_str = dt.isoformat()
             else:
-                date_str = datetime.now(timezone.utc).isoformat()
+                orig_date_str = datetime.now(timezone.utc).isoformat()
+                
+            # Use current ingestion time so it always gets pushed to the front of the feed
+            date_str = datetime.now(timezone.utc).isoformat()
+            
+            # Small sleep to ensure unique timestamps for sorting
+            time.sleep(0.1)
                 
             raw_description = entry.get("description", "") or entry.get("summary", "")
             clean_overview = fallback_summary(raw_description)
@@ -186,7 +192,8 @@ def main():
                 "description": final_summary[:150].replace('\n', ' ') + "...",
                 "source": feed["name"],
                 "source_url": norm_url,
-                "published": date_str,
+                "ingested_date": date_str,
+                "published": orig_date_str,
                 "category": final_category,
                 "tags": final_tags,
                 "slug": slug,
@@ -219,7 +226,7 @@ title: {json.dumps(item['title'])}
 description: {json.dumps(item['description'])}
 source: {json.dumps(item['source'])}
 source_url: {json.dumps(item['source_url'])}
-date: {json.dumps(item['published'])}
+date: {json.dumps(item['ingested_date'])}
 category: {json.dumps(item['category'])}
 tags:
 {tags_yaml}

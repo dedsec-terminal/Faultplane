@@ -3,7 +3,7 @@ title: "Microsoft Links 30+ Rotating Domains to MacSync Stealer Infrastructure"
 description: "Microsoft Defender experts identified more than 30 rotating web domains used by the MacSync Stealer, a macOS\u2011focused information stealer. By correlati..."
 source: "The Hacker News"
 source_url: "https://thehackernews.com/2026/08/microsoft-links-30-rotating-domains-to.html"
-date: "2026-08-19T06:01:53+00:00"
+date: "2026-08-19T10:00:30.673060+00:00"
 category: "threat-intel"
 tags:
   - "macOS"

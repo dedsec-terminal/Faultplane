@@ -3,7 +3,7 @@ title: "Clop-Linked Windchill Web Shell Decrypts Credentials and Maps Engineerin
 description: "A JSP web shell linked to the Clop ransomware group was deployed after exploiting a critical flaw in PTC Windchill and FlexPLM servers. The shell decr..."
 source: "The Hacker News"
 source_url: "https://thehackernews.com/2026/08/clop-linked-windchill-web-shell.html"
-date: "2026-08-19T05:39:25+00:00"
+date: "2026-08-19T10:00:30.671210+00:00"
 category: "threat-intel"
 tags:
   - "clop"
