@@ -74,24 +74,28 @@ def ask_groq_for_structured_data(groq_client, title, description, source, catego
     if len(clean_desc) > 3000:
         clean_desc = clean_desc[:3000] + "..."
         
-    prompt = f"""You are a cybersecurity analyst. Read the following article title and description and generate a structured JSON response.
-Do NOT invent CVEs, threat actors, malware names, or details that are not in the text.
-Summarize the facts concisely.
+    system_prompt = """You are a cybersecurity intelligence summarizer.
+Return ONLY the requested JSON object.
+Summarize the supplied article accurately.
+Do not invent facts.
+Keep the summary concise.
+Choose exactly one category from the provided taxonomy.
+Return no Markdown, explanation, reasoning, or additional text.
 
-Article Title: {title}
+JSON Schema (Strictly required):
+{
+  "title": "Normalized title string (max 120 chars)",
+  "summary": "Concise factual summary (max 600 chars)",
+  "category": "One of: threat-intel, malware, vulnerabilities, cves, data-breaches, research, campaigns, other",
+  "tags": ["tag1", "tag2"]
+}"""
+
+    user_prompt = f"""Article Title: {title}
 Article Description: {clean_desc}
 Original Source: {source}
-Fallback Category: {category}
+Fallback Category: {category}"""
 
-Return ONLY valid JSON (no markdown wrapping) in this exact structure:
-{{
-  "title": "Normalized title string",
-  "summary": "A 1-2 paragraph professional threat intel summary. Do not fabricate facts.",
-  "category": "MUST be exactly one of: threat-intel, malware, vulnerabilities, cves, data-breaches, research, campaigns, other",
-  "tags": ["tag1", "tag2"]
-}}"""
-
-    parsed = groq_client.ask_groq_json(prompt, ["title", "summary"])
+    parsed = groq_client.ask_groq_json(system_prompt, user_prompt, ["title", "summary"])
     if parsed:
         parsed["category"] = groq_client.validate_category(parsed.get("category", ""), category)
     return parsed
