@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'content/posts/**'
+      - 'content/cves/**'
       - 'src/**'
       - 'scripts/build_site.py'
       - '.github/workflows/deploy.yml'
