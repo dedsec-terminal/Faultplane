@@ -71,6 +71,8 @@ def generate_slug(title, date_str):
         
     return f"{date_prefix}-{clean_title}"
 
+VALID_CATEGORIES = {"threat-intel", "malware", "vulnerabilities", "cves", "data-breaches", "research", "campaigns", "other"}
+
 def ask_groq_for_structured_data(title, description, source, category):
     api_key = os.getenv("GROQ_API_KEY")
     if not Groq or not api_key:
@@ -83,12 +85,13 @@ Summarize the facts concisely.
 Article Title: {title}
 Article Description: {description}
 Original Source: {source}
-Primary Category: {category}
+Fallback Category: {category}
 
 Return ONLY valid JSON (no markdown wrapping) in this exact structure:
 {{
   "title": "Normalized title string",
   "summary": "A 1-2 paragraph professional threat intel summary. Do not fabricate facts.",
+  "category": "MUST be exactly one of: threat-intel, malware, vulnerabilities, cves, data-breaches, research, campaigns, other",
   "tags": ["tag1", "tag2"]
 }}"""
 
@@ -108,6 +111,10 @@ Return ONLY valid JSON (no markdown wrapping) in this exact structure:
         # Validation
         if not parsed.get("summary") or not parsed.get("title"):
             raise ValueError("Missing required fields in Groq JSON response.")
+            
+        if parsed.get("category") not in VALID_CATEGORIES:
+            logger.warning(f"Invalid category '{parsed.get('category')}' returned by Groq. Falling back to '{category}'.")
+            parsed["category"] = category
             
         return parsed
     except Exception as e:
@@ -178,16 +185,18 @@ def main():
             logger.info(f"Processing new item: {raw_title}")
             
             # Use Groq for structured output
-            groq_data = ask_groq_for_structured_data(raw_title, raw_description, feed["name"], feed.get("category", "research"))
+            groq_data = ask_groq_for_structured_data(raw_title, raw_description, feed["name"], feed.get("category", "other"))
             
             if groq_data:
                 final_title = groq_data.get("title", raw_title)
                 final_summary = groq_data.get("summary", fallback_summary(raw_description))
-                final_tags = groq_data.get("tags", [feed.get("category", "research")])
+                final_category = groq_data.get("category", feed.get("category", "other"))
+                final_tags = groq_data.get("tags", [final_category])
             else:
                 final_title = raw_title
                 final_summary = fallback_summary(raw_description)
-                final_tags = [feed.get("category", "research")]
+                final_category = feed.get("category", "other")
+                final_tags = [final_category]
                 
             slug = generate_slug(final_title, date_str)
             
@@ -197,7 +206,7 @@ def main():
                 "source": feed["name"],
                 "source_url": norm_url,
                 "published": date_str,
-                "category": feed.get("category", "research"),
+                "category": final_category,
                 "tags": final_tags,
                 "slug": slug,
                 "summary": final_summary

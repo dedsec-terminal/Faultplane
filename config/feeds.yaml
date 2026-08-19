@@ -66,3 +66,8 @@
   url: https://www.helpnetsecurity.com/feed/
   category: threat-intel
   enabled: true
+- name: DDoSecrets
+  url: https://torrents.ddosecrets.org/releases.xml
+  category: data-breaches
+  enabled: true
+

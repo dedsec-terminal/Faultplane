@@ -1,0 +1,30 @@
+<div class="landing-header">
+    <h2>Threat Intelligence Dashboard</h2>
+    <p>Automated intelligence aggregation, CVE tracking, and malware analysis.</p>
+</div>
+
+<div class="landing-grid">
+    <div class="landing-section">
+        <h3><a href="/Faultplane/feed/index.html">Latest Intelligence</a></h3>
+        <div class="feed-container">
+            {{ latest_intel }}
+        </div>
+        <a href="/Faultplane/feed/index.html" class="view-all">View All Intelligence &raquo;</a>
+    </div>
+
+    <div class="landing-section">
+        <h3><a href="/Faultplane/cves/index.html">Latest Vulnerabilities (CVEs)</a></h3>
+        <div class="feed-container">
+            {{ latest_cves }}
+        </div>
+        <a href="/Faultplane/cves/index.html" class="view-all">View All CVEs &raquo;</a>
+    </div>
+</div>
+
+<div class="landing-section full-width">
+    <h3><a href="/Faultplane/categories/malware.html">Recent Malware Activity</a></h3>
+    <div class="feed-container">
+        {{ latest_malware }}
+    </div>
+    <a href="/Faultplane/categories/malware.html" class="view-all">View All Malware &raquo;</a>
+</div>

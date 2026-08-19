@@ -17,10 +17,11 @@
             </header>
             <nav>
                 <ul>
-                    <li><a href="/Faultplane/index.html">Feed</a></li>
+                    <li><a href="/Faultplane/index.html">Home</a></li>
+                    <li><a href="/Faultplane/feed/index.html">Feed</a></li>
                     <li><a href="/Faultplane/categories/threat-intel.html">Threat Intel</a></li>
                     <li><a href="/Faultplane/categories/data-breaches.html">Data Breaches</a></li>
-                    <li><a href="/Faultplane/categories/cves.html">CVEs</a></li>
+                    <li><a href="/Faultplane/cves/index.html">CVEs</a></li>
                     <li><a href="/Faultplane/categories/malware.html">Malware</a></li>
                     <li><a href="/Faultplane/categories/research.html">Research</a></li>
                 </ul>
@@ -34,5 +35,26 @@
             {{ content }}
         </main>
     </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const href = entry.target.getAttribute("href");
+                        if (href && !document.querySelector(`link[rel="prefetch"][href="${href}"]`)) {
+                            const link = document.createElement("link");
+                            link.rel = "prefetch";
+                            link.href = href;
+                            document.head.appendChild(link);
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: "50px" });
+
+            document.querySelectorAll('a[href^="/Faultplane/"]').forEach(a => observer.observe(a));
+        });
+    </script>
 </body>
 </html>

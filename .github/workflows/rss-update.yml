@@ -44,16 +44,22 @@ jobs:
         run: |
           python scripts/rss_fetcher.py
 
+      - name: Run CVE Fetcher (NVD + KEV)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          python scripts/cve_fetcher.py
+
       - name: Commit Content Changes
         run: |
           git config user.name "DedSec-Terminal Bot"
           git config user.email "actions@github.com"
-          git add content/posts data/rss_state.json
+          git add content/posts data/rss_state.json content/cves data/cve_state.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(content): Automated RSS Intelligence Update"
+            git commit -m "chore(content): Automated Intelligence & CVE Update"
             git push
           fi
 

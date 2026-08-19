@@ -224,6 +224,68 @@ a:hover {
     margin: 3rem 0;
 }
 
+/* Landing Page */
+.landing-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.landing-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.landing-header p {
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+.landing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.landing-section h3 {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.landing-section h3 a {
+    color: var(--text-primary);
+}
+
+.landing-section h3 a:hover {
+    color: var(--accent);
+}
+
+.landing-section.full-width {
+    grid-column: 1 / -1;
+}
+
+.view-all {
+    display: inline-block;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .layout {
@@ -264,5 +326,9 @@ a:hover {
     
     .post-header h2 {
         font-size: 1.75rem;
+    }
+    
+    .landing-grid {
+        grid-template-columns: 1fr;
     }
 }
