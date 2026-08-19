@@ -38,7 +38,7 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GROQ_MODEL: openai/gpt-oss-20b
-          GROQ_FALLBACK_MODEL: openai/gpt-oss-120b
+          GROQ_FALLBACK_MODEL: qwen/qwen3.6-27b
         run: |
           python scripts/test_groq_pipeline.py
 
@@ -46,7 +46,7 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GROQ_MODEL: openai/gpt-oss-20b
-          GROQ_FALLBACK_MODEL: openai/gpt-oss-120b
+          GROQ_FALLBACK_MODEL: qwen/qwen3.6-27b
         run: |
           python scripts/rss_fetcher.py
 
@@ -54,7 +54,7 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GROQ_MODEL: openai/gpt-oss-20b
-          GROQ_FALLBACK_MODEL: openai/gpt-oss-120b
+          GROQ_FALLBACK_MODEL: qwen/qwen3.6-27b
         run: |
           python scripts/cve_fetcher.py
 
@@ -68,7 +68,15 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore(content): Automated Intelligence & CVE Update"
-            git push
+            for i in 1 2 3; do
+              if git push origin main; then
+                echo "Push succeeded on attempt $i"
+                break
+              else
+                echo "Push rejected on attempt $i, rebasing..."
+                git pull --rebase origin main || { echo "Rebase conflict! Aborting."; git rebase --abort; exit 1; }
+              fi
+            done
           fi
 
   deploy:

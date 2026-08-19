@@ -21,7 +21,7 @@ class GroqClient:
     def __init__(self):
         self.api_key = os.getenv("GROQ_API_KEY")
         self.primary_model = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
-        self.fallback_model = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-120b")
+        self.fallback_model = os.getenv("GROQ_FALLBACK_MODEL", "qwen/qwen3.6-27b")
         self.active_model = None
         self.client = None
 

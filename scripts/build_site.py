@@ -58,14 +58,9 @@ def load_markdown_files(directory):
         category = str(frontmatter.get("category", "other")).lower().strip()
         tags = frontmatter.get("tags", [])
 
-        # Persistent quote from frontmatter with fallback if missing
+        # Persistent quote from frontmatter — never mutate existing posts
         quote = frontmatter.get("quote")
         quote_author = frontmatter.get("quote_author")
-        if not quote:
-            from quote import get_random_quote
-            fallback_q = get_random_quote()
-            quote = fallback_q.get("quote")
-            quote_author = fallback_q.get("author", "Unknown")
 
         item = {
             "title": frontmatter.get("title", "Untitled"),
