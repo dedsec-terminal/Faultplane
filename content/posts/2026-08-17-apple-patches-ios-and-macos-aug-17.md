@@ -17,4 +17,11 @@ quote: "Do not turn back when you are just at the goal."
 quote_author: "Publilius Syrus"
 ---
 
+### Executive Summary
 Apple released updates for iOS/iPadOS 26 and 18, and macOS 26, addressing 108 vulnerabilities. The patch follows a prior macOS update that fixed a single screen‑sharing vulnerability, which did not affect iOS/iPadOS.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** SANS Internet Storm Center
+- **Published Date:** 2026-08-17T20:26:39+00:00
+- **Category:** vulnerabilities

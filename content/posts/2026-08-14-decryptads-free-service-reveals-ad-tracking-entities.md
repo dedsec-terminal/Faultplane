@@ -16,4 +16,11 @@ quote: "Do not turn back when you are just at the goal."
 quote_author: "Publilius Syrus"
 ---
 
+### Executive Summary
 Krebs on Security reports DecryptAds, a free tool that scrapes and correlates ad‑tech data to identify the companies and platforms that track users across websites and mobile apps. By aggregating semi‑public data, it makes it easier for individuals to see who is collecting their information and how ads are served.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Krebs on Security
+- **Published Date:** 2026-08-14T11:24:35+00:00
+- **Category:** threat-intel

@@ -15,4 +15,11 @@ quote: "The least movement is of importance to all nature. The entire ocean is a
 quote_author: "Blaise Pascal"
 ---
 
+### Executive Summary
 A remote attacker can trigger an infinite loop in dnsmasq's DNSSEC NSEC/NSEC3 type bitmap processing, causing a denial‑of‑service. No authentication is required. CVSS score 7.5. CVE-2026-4890.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Zero Day Initiative
+- **Published Date:** 2026-08-13T05:00:00+00:00
+- **Category:** cves

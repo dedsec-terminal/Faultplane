@@ -15,4 +15,11 @@ quote: "Work out your own salvation. Do not depend on others."
 quote_author: "Buddha"
 ---
 
+### Executive Summary
 William discusses the "Make Hazel a Hacker" segment from Beers with Talos, emphasizing that cybersecurity often yields multiple correct answers to questions. The newsletter reflects on how curiosity drives deeper understanding in the field.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Cisco Talos
+- **Published Date:** 2026-08-13T18:00:18+00:00
+- **Category:** research

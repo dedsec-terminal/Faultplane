@@ -16,4 +16,11 @@ quote: "No pessimist ever discovered the secrets of the stars, or sailed to an u
 quote_author: "Helen Keller"
 ---
 
+### Executive Summary
 Microsoft released its August 2026 Patch Tuesday update, addressing 421 vulnerabilities across its product line, including 62 critical issues. The update also includes Snort rules to detect related threats.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Cisco Talos
+- **Published Date:** 2026-08-11T22:21:02+00:00
+- **Category:** vulnerabilities

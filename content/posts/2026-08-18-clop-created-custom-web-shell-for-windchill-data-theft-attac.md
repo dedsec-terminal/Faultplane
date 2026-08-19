@@ -17,4 +17,11 @@ quote: "These days people seek knowledge, not wisdom. Knowledge is of the past, 
 quote_author: "Vernon Cooper"
 ---
 
+### Executive Summary
 A custom Java web shell, likely linked to the Clop ransomware gang, was designed for PTC Windchill and FlexPLM servers. It can decrypt credentials, enumerate file repositories, and steal files, enabling targeted data theft.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Bleeping Computer
+- **Published Date:** 2026-08-18T17:29:51+00:00
+- **Category:** threat-intel

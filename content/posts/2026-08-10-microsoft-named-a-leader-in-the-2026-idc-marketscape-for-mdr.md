@@ -18,4 +18,11 @@ quote: "All children are artists. The problem is how to remain an artist once he
 quote_author: "Pablo Picasso"
 ---
 
+### Executive Summary
 Microsoft has been named a Leader in the 2026 IDC MarketScape for Managed Detection and Response (MDR) and Managed Extended Detection and Response (MXDR) services for enterprises. The recognition highlights Microsoft Defender Experts MDR, which integrates AI, threat intelligence, and human expertise to deliver advanced threat detection and response capabilities.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Microsoft Security
+- **Published Date:** 2026-08-10T16:00:00+00:00
+- **Category:** threat-intel

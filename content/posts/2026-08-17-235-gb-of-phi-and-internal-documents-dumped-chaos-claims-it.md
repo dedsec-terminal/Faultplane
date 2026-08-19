@@ -12,4 +12,11 @@ quote: "Make the most of yourself for that is all there is of you."
 quote_author: "Ralph Emerson"
 ---
 
+### Executive Summary
 Ransomware‑as‑a‑Service group Chaos released 235 GB of PHI and internal documents from Healthcare Highways on Aug 5 2026, posting them on a leak site with a 24‑hour countdown.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** DataBreaches.net
+- **Published Date:** 2026-08-17T17:45:24+00:00
+- **Category:** data-breaches

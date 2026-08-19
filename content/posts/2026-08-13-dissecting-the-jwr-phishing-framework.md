@@ -16,4 +16,11 @@ quote: "Everything can be taken from a man but ... the last of the human freedom
 quote_author: "Victor Frankl"
 ---
 
+### Executive Summary
 Cisco Talos uncovered an undocumented phishing framework dubbed 'JWR', designed to convincingly mimic checkout and login pages on major payment and shopping sites. The framework enables attackers to harvest credentials and payment details by creating realistic, platform-specific spoofed interfaces.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Cisco Talos
+- **Published Date:** 2026-08-13T10:00:35+00:00
+- **Category:** research

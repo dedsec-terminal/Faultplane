@@ -16,4 +16,11 @@ quote: "Life is not measured by the breaths you take, but by its breathtaking mo
 quote_author: "Michael Vance"
 ---
 
+### Executive Summary
 SentinelOne Labs’ Tom Hegel released an initial assessment of the first five weeks of the Iran war cyber threat landscape in April. A follow‑up midyear assessment three months later refines the analysis with updated evidence, highlighting evolving tactics, techniques, and procedures used by threat actors.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** SentinelOne Labs
+- **Published Date:** 2026-07-21T13:00:21+00:00
+- **Category:** research

@@ -15,4 +15,11 @@ quote: "The highest stage in moral ure at which we can arrive is when we recogni
 quote_author: "Charles Darwin"
 ---
 
+### Executive Summary
 SentinelOne Labs released a real‑world benchmark that evaluates whether advanced AI models can maintain trustworthy malware investigations when subsequent evidence contradicts earlier findings. The test focuses on autonomous, long‑horizon malware analysis, assessing model resilience, adaptability, and the reliability of conclusions over time.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** SentinelOne Labs
+- **Published Date:** 2026-07-22T16:55:29+00:00
+- **Category:** malware

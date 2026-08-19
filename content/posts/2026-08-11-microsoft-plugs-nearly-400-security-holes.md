@@ -16,4 +16,11 @@ quote: "These days people seek knowledge, not wisdom. Knowledge is of the past, 
 quote_author: "Vernon Cooper"
 ---
 
+### Executive Summary
 Microsoft released security updates that address at least 398 vulnerabilities in Windows operating systems and related software. The patch set includes one flaw that is already being actively exploited, as well as two other weaknesses that had been publicly disclosed earlier. The updates aim to close these security gaps and mitigate potential exploitation.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Krebs on Security
+- **Published Date:** 2026-08-11T21:28:35+00:00
+- **Category:** threat-intel

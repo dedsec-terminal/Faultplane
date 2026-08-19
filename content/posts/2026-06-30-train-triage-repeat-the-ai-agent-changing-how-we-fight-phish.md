@@ -18,4 +18,11 @@ quote: "Arrogance and rudeness are training wheels on the bicycle of life \ufffd
 quote_author: "Laura Teresa Marquez"
 ---
 
+### Executive Summary
 Red Canary developed a super agent that combines machine learning, a rules engine, similarity matching, agentic AI, and large language models to automatically classify phishing emails, improving detection speed and accuracy.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Red Canary
+- **Published Date:** 2026-06-30T12:33:22+00:00
+- **Category:** threat-intel

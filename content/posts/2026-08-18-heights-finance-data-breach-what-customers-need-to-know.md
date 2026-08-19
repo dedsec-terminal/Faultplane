@@ -15,4 +15,11 @@ quote: "I have been impressed with the urgency of doing. Knowing is not enough; 
 quote_author: "Leonardo da Vinci"
 ---
 
+### Executive Summary
 Heights Finance, a U.S. financial services provider, suffered a data breach exposing personal and financial information of roughly 750,000 customers. Leaked data includes Social Security numbers, bank account details, and other sensitive data. Victims face heightened risk of identity theft and phishing attacks. The breach was reported by Malwarebytes Labs.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Malwarebytes Labs
+- **Published Date:** 2026-08-18T10:36:14+00:00
+- **Category:** data-breaches

@@ -17,4 +17,11 @@ quote: "On every thorn, delightful wisdom grows, In every rill a sweet instructi
 quote_author: "Edward Young"
 ---
 
+### Executive Summary
 A directory traversal flaw in Cisco Identity Services Engine’s PatchUpdateListener component allows authenticated attackers to read arbitrary files, exposing sensitive data. The vulnerability, identified as CVE-2026-20148, carries a CVSS score of 4.9 and was disclosed by Zero Day Initiative (ZDI-26-582).
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Zero Day Initiative
+- **Published Date:** 2026-08-13T05:00:00+00:00
+- **Category:** cves

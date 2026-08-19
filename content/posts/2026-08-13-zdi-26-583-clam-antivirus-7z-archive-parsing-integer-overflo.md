@@ -16,4 +16,11 @@ quote: "In all chaos there is a cosmos, in all disorder a secret order."
 quote_author: "Carl Jung"
 ---
 
+### Executive Summary
 A zero‑day integer‑overflow flaw in Clam AntiVirus’s 7z archive parser allows remote attackers to trigger a remote code execution on affected installations. The vulnerability, identified as CVE‑2026‑20215 and assigned a CVSS score of 8.4, requires interaction with the product but can be exploited via various vectors depending on the implementation.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Zero Day Initiative
+- **Published Date:** 2026-08-13T05:00:00+00:00
+- **Category:** cves

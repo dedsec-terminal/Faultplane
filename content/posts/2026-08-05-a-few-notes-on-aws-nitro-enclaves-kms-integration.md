@@ -16,4 +16,11 @@ quote: "It is only with the heart that one can see rightly, what is essential is
 quote_author: "Antoine de Saint-Exupery"
 ---
 
+### Executive Summary
 The post explains how AWS Nitro Enclaves can integrate with AWS Key Management Service (KMS) to offload key management. It details KMS key types (CMK, data keys, key pairs), how data keys are used for envelope encryption, and how KMS policies can restrict CMK access to specific enclaves via PCR values or encrypt responses to enclave public keys. The article catalogs passive and active attack classes on the enclave‑KMS channel and discusses operational risks even when cryptography is correct.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Trail of Bits
+- **Published Date:** 2026-08-05T11:00:00+00:00
+- **Category:** research

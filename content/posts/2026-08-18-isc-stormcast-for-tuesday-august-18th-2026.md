@@ -15,4 +15,11 @@ quote: "Better than a thousand hollow words, is one word that brings peace."
 quote_author: "Buddha"
 ---
 
+### Executive Summary
 Daily threat‑intelligence briefing from the SANS Internet Storm Center, summarizing recent cyber incidents, emerging malware, notable vulnerabilities, and recommended mitigations for the week of August 18, 2026.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** SANS Internet Storm Center
+- **Published Date:** 2026-08-18T02:00:03+00:00
+- **Category:** threat-intel

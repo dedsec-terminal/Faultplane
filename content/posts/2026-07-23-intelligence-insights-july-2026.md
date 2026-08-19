@@ -14,4 +14,11 @@ quote: "Myths which are believed in tend to become true."
 quote_author: "George Orwell"
 ---
 
+### Executive Summary
 Red Canary's Intelligence Insights for July 2026 highlights ClearFake's continued dominance and introduces the new CastleLoader malware. The report details ClearFake's latest tactics, techniques, and procedures, while also providing an overview of CastleLoader's capabilities and potential impact on targeted organizations.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Red Canary
+- **Published Date:** 2026-07-23T17:12:43+00:00
+- **Category:** threat-intel

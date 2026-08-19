@@ -17,4 +17,11 @@ quote: "An optimist is a person who sees a green light everywhere, while the pes
 quote_author: "Albert Schweitzer"
 ---
 
+### Executive Summary
 A developer discovered that a Google Doc containing company passwords was publicly indexed by Google search, exposing sensitive credentials. The incident highlights the risks of using the ‘anyone with the link’ sharing setting without proper access controls and underscores the need for stricter sharing policies and regular audits to prevent accidental data leaks.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Malwarebytes Labs
+- **Published Date:** 2026-08-18T11:15:17+00:00
+- **Category:** data-breaches

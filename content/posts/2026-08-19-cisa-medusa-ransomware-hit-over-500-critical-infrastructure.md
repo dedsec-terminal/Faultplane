@@ -16,4 +16,11 @@ quote: "To give hope to someone occurs when you teach them how to use the tools 
 quote_author: "Byron Pulsifer"
 ---
 
+### Executive Summary
 The FBI reports that the Medusa ransomware gang has breached more than 500 U.S. critical infrastructure organizations since June 2021, according to a CISA statement. The attacks targeted a wide range of sectors, underscoring the growing threat to essential services.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Bleeping Computer
+- **Published Date:** 2026-08-19T08:00:48+00:00
+- **Category:** threat-intel

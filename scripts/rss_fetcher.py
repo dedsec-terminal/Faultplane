@@ -160,6 +160,7 @@ def main():
                 date_str = datetime.now(timezone.utc).isoformat()
                 
             raw_description = entry.get("description", "") or entry.get("summary", "")
+            clean_overview = fallback_summary(raw_description)
             
             logger.info(f"Processing new item: {raw_title}")
             
@@ -169,12 +170,12 @@ def main():
             
             if groq_data:
                 final_title = groq_data.get("title", raw_title)
-                final_summary = groq_data.get("summary", fallback_summary(raw_description))
+                final_summary = groq_data.get("summary", clean_overview)
                 final_category = groq_data.get("category", feed.get("category", "other"))
                 final_tags = groq_data.get("tags", [final_category])
             else:
                 final_title = raw_title
-                final_summary = fallback_summary(raw_description)
+                final_summary = clean_overview
                 final_category = feed.get("category", "other")
                 final_tags = [final_category]
                 
@@ -189,7 +190,8 @@ def main():
                 "category": final_category,
                 "tags": final_tags,
                 "slug": slug,
-                "summary": final_summary
+                "summary": final_summary,
+                "overview": clean_overview
             })
             
             seen_urls.add(norm_url)
@@ -201,13 +203,17 @@ def main():
             
         logger.info(f"  -> Added {added_count} new items from {feed['name']}")
         
-    # Write new items to markdown with persistent quote
+    # Write new items to markdown with structured Executive Summary & Metadata
     for item in new_items:
         tags_yaml = "\n".join([f'  - "{t}"' for t in item['tags']])
         q_data = get_random_quote()
         quote_text = q_data.get("quote", "").replace('"', "'").replace('\n', ' ')
         quote_author = q_data.get("author", "Unknown").replace('"', "'").replace('\n', ' ')
         
+        overview_section = ""
+        if item.get("overview") and item["overview"] != item["summary"]:
+            overview_section = f"\n**Original Description:**\n{item['overview']}\n"
+            
         md_content = f"""---
 title: {json.dumps(item['title'])}
 description: {json.dumps(item['description'])}
@@ -222,8 +228,15 @@ quote: {json.dumps(quote_text)}
 quote_author: {json.dumps(quote_author)}
 ---
 
+### Executive Summary
 {item['summary']}
-"""
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** {item['source']}
+- **Published Date:** {item['published']}
+- **Category:** {item['category']}
+{overview_section}"""
         filepath = CONTENT_DIR / f"{item['slug']}.md"
         try:
             filepath.write_text(md_content, encoding="utf-8")

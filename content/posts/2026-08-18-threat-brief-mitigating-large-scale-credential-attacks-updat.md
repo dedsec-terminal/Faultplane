@@ -16,4 +16,11 @@ quote: "Most folks are about as happy as they make up their minds to be."
 quote_author: "Abraham Lincoln"
 ---
 
+### Executive Summary
 In August 2026, threat actor TheHatman claimed to have exfiltrated a large volume of credentials from Microsoft Entra tenants. Unit 42’s brief outlines the tactics used, the impact on affected organizations, and provides actionable mitigation steps—including strengthening MFA, monitoring for anomalous sign‑ins, and tightening access controls—to defend against similar large‑scale credential attacks.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Unit 42 (Palo Alto)
+- **Published Date:** 2026-08-18T19:05:33+00:00
+- **Category:** research

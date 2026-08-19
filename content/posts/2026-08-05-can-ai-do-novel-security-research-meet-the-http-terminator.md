@@ -15,4 +15,11 @@ quote: "Those who are free of resentful thoughts surely find peace."
 quote_author: "Buddha"
 ---
 
+### Executive Summary
 PortSwigger researchers built an autonomous AI system that can invent novel web‑application attack techniques and automatically exploit live sites at scale, showing AI can move beyond bug detection into creative offensive security.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** PortSwigger Research
+- **Published Date:** 2026-08-05T19:30:00+00:00
+- **Category:** research

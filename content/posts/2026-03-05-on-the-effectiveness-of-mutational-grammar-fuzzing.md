@@ -18,4 +18,11 @@ quote: "Some people are always grumbling because roses have thorns; I am thankfu
 quote_author: "Alphonse Karr"
 ---
 
+### Executive Summary
 Mutational grammar fuzzing uses a predefined grammar to mutate inputs while preserving syntactic structure. In coverage‑guided mode, new samples that trigger unseen code paths are saved for future mutations. The technique has uncovered complex bugs in XSLT engines of web browsers and JIT compilers. However, the author notes subtle flaws that casual users may miss and presents a simple countermeasure to mitigate them.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Google Project Zero
+- **Published Date:** 2026-03-05T08:00:00+00:00
+- **Category:** research

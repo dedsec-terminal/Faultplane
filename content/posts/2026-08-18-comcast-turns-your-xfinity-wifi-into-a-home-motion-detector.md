@@ -17,4 +17,11 @@ quote: "Work out your own salvation. Do not depend on others."
 quote_author: "Buddha"
 ---
 
+### Executive Summary
 Comcast’s Xfinity Shield platform now uses Wi‑Fi signals to detect motion inside homes, turning routers and wireless devices into motion sensors without cameras. The feature can alert homeowners to movement and raises privacy concerns, as it can track occupants’ movements. The technology relies on analyzing signal‑strength variations to infer motion, offering a new layer of home protection.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Bleeping Computer
+- **Published Date:** 2026-08-18T20:14:58+00:00
+- **Category:** research

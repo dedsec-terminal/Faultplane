@@ -16,4 +16,11 @@ quote: "These days people seek knowledge, not wisdom. Knowledge is of the past, 
 quote_author: "Vernon Cooper"
 ---
 
+### Executive Summary
 The Nepalese National Cyber Security Centre (NCSC) has joined Have I Been Pwned's free government service, becoming the 47th government to monitor its domains for data breaches. This enables the NCSC to detect exposure of government email addresses and other sensitive data.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Troy Hunt (Have I Been Pwned)
+- **Published Date:** 2026-08-03T06:38:05+00:00
+- **Category:** data-breaches

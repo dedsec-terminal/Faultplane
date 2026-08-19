@@ -15,4 +15,11 @@ quote: "A rolling stone gathers no moss."
 quote_author: "Publilius Syrus"
 ---
 
+### Executive Summary
 Criminals target public Wi‑Fi routers in hotels, conference centers, and other venues worldwide, altering their DNS settings to redirect users to counterfeit login portals and harvest credentials.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Schneier on Security
+- **Published Date:** 2026-08-17T11:18:03+00:00
+- **Category:** threat-intel

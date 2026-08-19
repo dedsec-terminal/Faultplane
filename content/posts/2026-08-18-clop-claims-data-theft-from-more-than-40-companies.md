@@ -16,4 +16,11 @@ quote: "Act as if what you do makes a difference. It does."
 quote_author: "William James"
 ---
 
+### Executive Summary
 A Russian‑speaking extortion group, Clop, announced it stole data from over 40 firms, including major corporations such as Shell, General Electric, and PTC’s product lifecycle management software. The group is known for supply‑chain attacks and is the primary suspect in the July breach of PTC’s software.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** DataBreaches.net
+- **Published Date:** 2026-08-18T20:21:07+00:00
+- **Category:** data-breaches

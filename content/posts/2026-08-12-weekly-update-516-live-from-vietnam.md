@@ -15,4 +15,11 @@ quote: "When you arise in the morning, think of what a precious privilege it is 
 quote_author: "Marcus Aurelius"
 ---
 
+### Executive Summary
 Troy Hunt’s weekly update shares a lighthearted look at YouTube playback issues and a Brinks Home FAQ that he found intriguing. He reflects on how to write an FAQ and the pitfalls of failing to do so. The post also touches on the broader context of data breaches, though no specific breach is detailed in this edition.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Troy Hunt (Have I Been Pwned)
+- **Published Date:** 2026-08-12T08:16:15+00:00
+- **Category:** data-breaches

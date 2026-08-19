@@ -16,4 +16,11 @@ quote: "Arriving at one point is the starting point to another."
 quote_author: "John Dewey"
 ---
 
+### Executive Summary
 Ransom Busters, a ransomware affiliate, claims to have compromised ransomware groups' servers and offers to delete stolen data for a fee of $20,000–$60,000. The group contacts victims via email, presenting itself as a recovery service, but the offer is essentially extortion. GuidePoint Research notes the anomaly.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** The Hacker News
+- **Published Date:** 2026-08-18T16:58:16+00:00
+- **Category:** threat-intel

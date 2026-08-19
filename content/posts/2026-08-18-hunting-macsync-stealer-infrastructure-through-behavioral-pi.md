@@ -15,4 +15,11 @@ quote: "The truth is always exciting. Speak it, then. Life is dull without it."
 quote_author: "Pearl Buck"
 ---
 
+### Executive Summary
 Microsoft Security identified the MacSync Stealer malware, which rapidly rotates domains to avoid detection. By tracking consistent behavioral patterns, analysts uncovered over 30 related domains, demonstrating how durable hunting pivots can expose hidden infrastructure.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Microsoft Security
+- **Published Date:** 2026-08-18T17:08:28+00:00
+- **Category:** threat-intel

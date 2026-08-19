@@ -16,4 +16,11 @@ quote: "Nature takes away any faculty that is not used."
 quote_author: "William R. Inge"
 ---
 
+### Executive Summary
 Unit 42 reports that Kimwolf v7 expands its botnet to target Android IoT devices, using HTTP/2 for DDoS fingerprinting, Ethereum ENS for command‑and‑control resolution, and Tor as a backup routing layer.
+
+---
+**Intelligence Metadata**
+- **Source Publisher:** Unit 42 (Palo Alto)
+- **Published Date:** 2026-08-11T10:00:16+00:00
+- **Category:** research
