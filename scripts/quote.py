@@ -1,91 +1,64 @@
 import json
 import random
+import logging
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 BASE_DIR = Path(__file__).resolve().parent
-RAW_QUOTES_FILE = BASE_DIR / "raw.json"
+# Assume data dir is one level up from scripts
+DATA_DIR = BASE_DIR.parent / "data"
+QUOTES_FILE = DATA_DIR / "quotes.json"
 
-DEFAULT_QUOTE = (
-    "Vision without action is a daydream. Action without vision is a nightmare.\n"
-    "Author: Japanese proverb"
-)
+DEFAULT_QUOTE = {
+    "quote": "Vision without action is a daydream. Action without vision is a nightmare.",
+    "author": "Japanese proverb"
+}
 
-
-# ------------------------------------------
-# LOAD QUOTES
-# ------------------------------------------
 def load_quotes():
+    quotes = []
     try:
-        with open(RAW_QUOTES_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        quotes = []
-
-        if isinstance(data, list):
-            for item in data:
-
-                # -------------------------
-                # STRING FORMAT
-                # -------------------------
-                if isinstance(item, str):
-                    item = item.strip()
-                    if item:
-                        quotes.append(item)
-
-                # -------------------------
-                # DICT FORMAT
-                # -------------------------
-                elif isinstance(item, dict):
-
-                    quote = (
-                        item.get("quote")
-                        or item.get("text")
-                        or item.get("content")
-                        or item.get("quoteText")   # FIXED
-                    )
-
-                    author = (
-                        item.get("author")
-                        or item.get("by")
-                        or item.get("source")
-                        or item.get("quoteAuthor")  # FIXED
-                    )
-
-                    if quote and author:
-                        # SAFE FORMAT (NO EM DASH)
-                        quotes.append(
-                            f"{quote}\nAuthor: {author}"
+        if QUOTES_FILE.exists():
+            with open(QUOTES_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                
+            if isinstance(data, list):
+                for item in data:
+                    if isinstance(item, dict):
+                        quote_text = (
+                            item.get("quote") or item.get("text") or 
+                            item.get("content") or item.get("quoteText")
                         )
-
-                    elif quote:
-                        quotes.append(quote)
-
-        if quotes:
-            print(f"Loaded {len(quotes)} quotes")
-            return quotes
-
+                        author = (
+                            item.get("author") or item.get("by") or 
+                            item.get("source") or item.get("quoteAuthor") or "Unknown"
+                        )
+                        
+                        if quote_text:
+                            quotes.append({
+                                "quote": quote_text.strip(),
+                                "author": author.strip()
+                            })
+                            
     except Exception as e:
-        print(f"Quote load error: {e}")
+        logger.warning(f"Failed to load quotes from {QUOTES_FILE}: {e}")
+        
+    if not quotes:
+        logger.warning("No quotes loaded, falling back to default quote.")
+        quotes.append(DEFAULT_QUOTE)
+        
+    return quotes
 
-    return [DEFAULT_QUOTE]
+# Load quotes once globally
+QUOTES_CACHE = load_quotes()
 
-
-# ------------------------------------------
-# GLOBAL QUOTES CACHE
-# ------------------------------------------
-QUOTES = load_quotes()
-
-
-# ------------------------------------------
-# GET RANDOM QUOTE
-# ------------------------------------------
 def get_random_quote():
-    return random.choice(QUOTES)
+    """
+    Returns a random quote as a dictionary with 'quote' and 'author' keys.
+    """
+    if not QUOTES_CACHE:
+        return DEFAULT_QUOTE
+    return random.choice(QUOTES_CACHE)
 
-
-# ------------------------------------------
-# TEST OUTPUT
-# ------------------------------------------
 if __name__ == "__main__":
-    print("\nRandom Quote:\n")
-    print(get_random_quote())
+    print(json.dumps(get_random_quote(), indent=2))

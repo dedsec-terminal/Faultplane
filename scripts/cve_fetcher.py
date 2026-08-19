@@ -8,6 +8,7 @@ import urllib.parse
 
 import requests
 from groq_client import GroqClient
+from quote import get_random_quote
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -210,6 +211,10 @@ def main():
         if kev_status:
             kev_yaml = f'kev: true\nkev_added: "{kev_date}"\n'
             
+        q_data = get_random_quote()
+        quote_text = q_data.get("quote", "").replace('"', "'").replace('\n', ' ')
+        quote_author = q_data.get("author", "").replace('"', "'").replace('\n', ' ')
+            
         md_content = f"""---
 title: "{cve_id}"
 description: "{summary[:150].replace('"', "'")}..."
@@ -223,6 +228,8 @@ severity: "{meta['severity']}"
 {kev_yaml}tags:
 {tags_yaml}
 slug: "{cve_id.lower()}"
+quote: "{quote_text}"
+quote_author: "{quote_author}"
 ---
 
 ### Executive Summary

@@ -13,6 +13,7 @@ import feedparser
 import requests
 
 from groq_client import GroqClient
+from quote import get_random_quote
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -209,6 +210,10 @@ def main():
     # Write new items to markdown safely
     for item in new_items:
         tags_yaml = "\n".join([f'  - "{t}"' for t in item['tags']])
+        q_data = get_random_quote()
+        quote_text = q_data.get("quote", "").replace('"', "'").replace('\n', ' ')
+        quote_author = q_data.get("author", "").replace('"', "'").replace('\n', ' ')
+        
         md_content = f"""---
 title: "{item['title'].replace('"', "'")}"
 description: "{item['description'].replace('"', "'")}"
@@ -219,12 +224,11 @@ category: "{item['category']}"
 tags:
 {tags_yaml}
 slug: "{item['slug']}"
+quote: "{quote_text}"
+quote_author: "{quote_author}"
 ---
 
 {item['summary']}
-
----
-**Source:** [{item['source']}]({item['source_url']})
 """
         filepath = CONTENT_DIR / f"{item['slug']}.md"
         try:

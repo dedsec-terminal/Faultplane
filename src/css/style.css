@@ -207,6 +207,27 @@ a:hover {
     padding: 1.5rem;
 }
 
+.post-quote cite {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.post-source {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.empty-state {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
 .post-body a {
     text-decoration: underline;
     text-decoration-color: rgba(76, 175, 80, 0.4);

@@ -67,7 +67,11 @@ def load_markdown_files(directory):
             "tags": tags,
             "slug": slug,
             "body": html_body,
-            "type": "post" if directory == POSTS_DIR else "cve"
+            "type": "post" if directory == POSTS_DIR else "cve",
+            "quote": frontmatter.get("quote"),
+            "quote_author": frontmatter.get("quote_author"),
+            "source": frontmatter.get("source"),
+            "source_url": frontmatter.get("source_url")
         }
         
         if item["type"] == "cve":
@@ -135,9 +139,21 @@ def build_site():
     
     # Generate individual pages
     for item in all_content:
+        quote_html = ""
+        if item.get("quote"):
+            author = item.get("quote_author") or "Unknown"
+            quote_html = f'\n<blockquote class="post-quote"><p>{item["quote"]}</p><cite>&mdash; {author}</cite></blockquote>\n'
+            
+        source_html = ""
+        if item.get("source_url"):
+            source_name = item.get("source") or "Original Article"
+            source_html = f'\n<div class="post-source"><strong>Source:</strong> <a href="{item["source_url"]}" target="_blank" rel="noopener noreferrer">{source_name}</a></div>\n'
+            
         post_content = post_tmpl.replace("{{ title }}", item["title"]) \
                                 .replace("{{ date }}", item["formatted_date"]) \
-                                .replace("{{ body }}", item["body"])
+                                .replace("{{ body }}", item["body"]) \
+                                .replace("{{ quote_html }}", quote_html) \
+                                .replace("{{ source_html }}", source_html)
         
         cat_html = f'<a href="/Faultplane/categories/{item["category"]}.html" class="category-tag">{item["category"]}</a> '
         post_content = post_content.replace("{{ categories }}", cat_html)
@@ -205,18 +221,25 @@ def build_site():
         generate_paginated_index(cat_items, f"/Faultplane/categories/{cat}", f"Category: {cat}", DIST_DIR / "categories", filename_base=cat)
 
     # Generate custom Landing Page (index.html)
-    def render_list(items, limit=5):
+    def render_list(items, limit=4):
+        if not items:
+            return '<p class="empty-state">No recent activity found for this category.</p>'
         html = '<ul class="post-list">'
         for p in items[:limit]:
             html += f'<li><span class="post-meta">{p["formatted_date"]}</span> <a href="{p["url"]}">{p["title"]}</a></li>\n'
         html += '</ul>'
         return html
         
-    malware_posts = category_map.get("malware", [])
+    threat_intel = category_map.get("threat-intel", [])
+    malware = category_map.get("malware", [])
+    breaches = category_map.get("data-breaches", [])
+    research = category_map.get("research", [])
     
-    landing_content = landing_tmpl.replace("{{ latest_intel }}", render_list(posts, 7)) \
-                                  .replace("{{ latest_cves }}", render_list(cves, 7)) \
-                                  .replace("{{ latest_malware }}", render_list(malware_posts, 5))
+    landing_content = landing_tmpl.replace("{{ latest_intel }}", render_list(threat_intel, 4)) \
+                                  .replace("{{ latest_cves }}", render_list(cves, 4)) \
+                                  .replace("{{ latest_malware }}", render_list(malware, 4)) \
+                                  .replace("{{ latest_breaches }}", render_list(breaches, 4)) \
+                                  .replace("{{ latest_research }}", render_list(research, 4))
                                   
     full_landing = base_tmpl.replace("{{ title }}", "Faultplane - Cyber Threat Intelligence") \
                             .replace("{{ content }}", landing_content)
