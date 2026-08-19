@@ -1,20 +1,28 @@
 # Faultplane
 
-Faultplane is an automated cybersecurity intelligence platform that continuously aggregates, summarizes, and classifies threat intelligence, malware analysis, data breach reports, and vulnerability disclosures (CVEs) into a clean, searchable static knowledge base.
+Faultplane is an automated cybersecurity intelligence platform that continuously aggregates, summarizes, and classifies threat intelligence, malware analysis, data breach reports, and vulnerability disclosures from authoritative open-source intelligence feeds in real time.
 
 **Live Platform:** [Faultplane](https://dedsec-terminal.github.io/Faultplane/)
 
 ---
 
+## Platform Screenshot
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/dedsec-terminal/Faultplane/main/assets/screenshot.png" alt="Faultplane Dashboard" width="900" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+</div>
+
+---
+
 ## Intelligence Coverage
 
-| Category                | Primary Focus & Sources                                                                                                                                                                                   |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Threat Intelligence** | State-sponsored operations, APT campaigns, phishing campaigns, identity threats (_The Hacker News, Krebs on Security, Bleeping Computer, Schneier on Security, Microsoft Security, SANS ISC, Red Canary_) |
-| **Malware & Threats**   | Reverse engineering, ransomware operations, loader/botnet analysis (_Securelist, SentinelOne Labs, Malwarebytes Labs_)                                                                                    |
-| **Data Breaches**       | Verified breaches, leaks, credential dump disclosures (_DataBreaches.net, Have I Been Pwned / Troy Hunt_)                                                                                                 |
-| **Security Research**   | Zero-day vulnerability research, protocol desyncs, fuzzing, PoCs (_Cisco Talos, Unit 42, Google Project Zero, PortSwigger Research, Trail of Bits_)                                                       |
-| **Authoritative CVEs**  | Newly published/modified vulnerabilities and active exploitation enrichment (_NVD 2.0 API, CISA KEV, Zero Day Initiative, CISA Advisories_)                                                               |
+| Category                | Primary Focus & Sources                                                                                                                                                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Threat Intelligence** | State-sponsored operations, APT campaigns, phishing campaigns, identity threats (_The Hacker News, Krebs on Security, Bleeping Computer, Schneier on Security, Microsoft Security Response Center_) |
+| **Malware & Threats**   | Reverse engineering, ransomware operations, loader/botnet analysis (_Securelist, SentinelOne Labs, Malwarebytes Labs_)                                                      |
+| **Data Breaches**       | Verified breaches, leaks, credential dump disclosures (_DataBreaches.net, Have I Been Pwned / Troy Hunt_)                                                                   |
+| **Security Research**   | Zero-day vulnerability research, protocol desyncs, fuzzing, PoCs (_Cisco Talos, Unit 42, Google Project Zero, PortSwigger Research, Trail of Bits_)                         |
+| **Authoritative CVEs**  | Newly published/modified vulnerabilities and active exploitation enrichment (_NVD 2.0 API, CISA KEV, Zero Day Initiative, CISA Advisories_)                                 |
 
 ---
 
@@ -27,10 +35,10 @@ Faultplane is an automated cybersecurity intelligence platform that continuously
 ```
 
 1. **Daily Automation (24h Cycle):** GitHub Actions triggers ingestion at `00:00 UTC` daily, batching updates while conserving API tokens.
-2. **Two-Source CVE Ingestion:** Primary vulnerability data is pulled from the official NVD 2.0 API and cross-referenced with CISA's Known Exploited Vulnerabilities (KEV) catalog for real-world exploitation warnings.
-3. **Groq AI Pipeline (`groq_client.py`):** Uses high-throughput LLM chat completions (`openai/gpt-oss-20b` with fallback support) to produce structured, hallucination-free executive summaries and strict taxonomy classification.
-4. **Persistent Quote System:** Each article is permanently assigned a curated security/philosophical quote from `data/quotes.json` in its YAML frontmatter upon generation, ensuring consistent article layouts.
-5. **Static Site Generator (`build_site.py`):** Lightweight, zero-framework Python generator compiling Markdown into responsive, high-performance HTML/CSS with balanced category sections (4 items per category) and prefetching.
+2. **Two-Source CVE Ingestion:** Primary vulnerability data is pulled from the official NVD 2.0 API and cross-referenced with CISA's Known Exploited Vulnerabilities (KEV) catalog for real-world exploitation context.
+3. **Groq AI Pipeline (`groq_client.py`):** Uses high-throughput LLM chat completions (`openai/gpt-oss-20b` with fallback support) to produce structured, hallucination-free executive summaries and strategic classifications.
+4. **Persistent Quote System:** Each article is permanently assigned a curated security/philosophical quote from `data/quotes.json` in its YAML frontmatter upon generation, ensuring consistent article identity.
+5. **Static Site Generator (`build_site.py`):** Lightweight, zero-framework Python generator compiling Markdown into responsive, high-performance HTML/CSS with balanced category sections (4 items per row).
 
 ---
 
