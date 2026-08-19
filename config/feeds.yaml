@@ -1,0 +1,68 @@
+- name: The Hacker News
+  url: https://feeds.feedburner.com/TheHackersNews
+  category: threat-intel
+  enabled: true
+- name: Krebs on Security
+  url: https://krebsonsecurity.com/feed/
+  category: threat-intel
+  enabled: true
+- name: Bleeping Computer
+  url: https://www.bleepingcomputer.com/feed/
+  category: threat-intel
+  enabled: true
+- name: Securelist
+  url: https://securelist.com/feed/
+  category: threat-intel
+  enabled: true
+- name: Schneier on Security
+  url: https://www.schneier.com/feed/atom/
+  category: threat-intel
+  enabled: true
+- name: Wired Security
+  url: https://www.wired.com/feed/category/security/rss
+  category: threat-intel
+  enabled: true
+- name: DataBreaches.net
+  url: https://databreaches.net/feed/
+  category: data-breaches
+  enabled: true
+- name: CISA Cyber Advisories
+  url: https://www.cisa.gov/cybersecurity-advisories/all.xml
+  category: cves
+  enabled: true
+- name: CISA Alerts
+  url: https://www.cisa.gov/uscert/ncas/alerts.xml
+  category: cves
+  enabled: true
+- name: Zero Day Initiative
+  url: https://www.zerodayinitiative.com/rss/published/
+  category: cves
+  enabled: true
+- name: NVD CVEs
+  url: https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml
+  category: cves
+  enabled: false # NVD deprecated their XML data feeds in early 2024. Use the 2.0 API instead.
+- name: Cisco Talos
+  url: https://blog.talosintelligence.com/rss/
+  category: research
+  enabled: true
+- name: Unit 42 (Palo Alto)
+  url: https://unit42.paloaltonetworks.com/feed/
+  category: research
+  enabled: true
+- name: Google Cloud Threat Intel
+  url: https://cloud.google.com/blog/topics/threat-intelligence/rss/
+  category: threat-intel
+  enabled: true
+- name: Dark Reading
+  url: https://www.darkreading.com/rss.xml
+  category: threat-intel
+  enabled: true
+- name: Security Week
+  url: https://www.securityweek.com/feed/
+  category: threat-intel
+  enabled: true
+- name: Help Net Security
+  url: https://www.helpnetsecurity.com/feed/
+  category: threat-intel
+  enabled: true

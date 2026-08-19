@@ -1,10 +1,8 @@
-name: RSS Intel Pipeline
+name: RSS Ingestion
 
 on:
   schedule:
-    # Run once a day at midnight UTC
-    - cron: "0 0 * * *"
-
+    - cron: "0 */4 * * *" # Run every 4 hours
   workflow_dispatch:
 
 permissions:
@@ -13,22 +11,17 @@ permissions:
   id-token: write
 
 concurrency:
-  group: rss-intel
-  cancel-in-progress: false
+  group: "rss-ingestion"
+  cancel-in-progress: true
 
 jobs:
-  # Job 1: Fetch RSS feeds, update data, and build the static site
-  build:
+  fetch:
     runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.commit_changes.outputs.changed }}
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: recursive
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -41,66 +34,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Ensure checkpoint exists
+      - name: Ensure State Directory Exists
         run: |
-          touch .seen_posts.json
+          mkdir -p data
 
-      - name: Run Intel Balancer v3
+      - name: Run Intel Balancer (RSS Fetcher)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           python scripts/rss_fetcher.py
 
-      - name: Commit RSS updates
-        id: commit_changes
+      - name: Commit Content Changes
         run: |
           git config user.name "DedSec-Terminal Bot"
           git config user.email "actions@github.com"
-
-          git add content/posts .seen_posts.json
+          git add content/posts data/rss_state.json
 
           if git diff --cached --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
             echo "No changes to commit"
           else
-            git commit -m "RSS Intel Update"
+            git commit -m "chore(content): Automated RSS Intelligence Update"
             git push
-            echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup Hugo
-        if: steps.commit_changes.outputs.changed == 'true'
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: latest
-          extended: true
-
-      - name: Setup Pages
-        if: steps.commit_changes.outputs.changed == 'true'
-        uses: actions/configure-pages@v5
-
-      - name: Build Site
-        if: steps.commit_changes.outputs.changed == 'true'
-        env:
-          HUGO_ENV: production
-        run: hugo --minify
-
-      - name: Upload Pages Artifact
-        if: steps.commit_changes.outputs.changed == 'true'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
-  # Job 2: Deploy the built artifact to GitHub Pages (Only runs if changes were made)
   deploy:
-    needs: build
-    if: needs.build.outputs.changed == 'true'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: Deploy Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    needs: fetch
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

@@ -1,439 +1,246 @@
 import os
 import re
 import json
-import logging
+import yaml
+import time
 import hashlib
-import socket
-import urllib.parse
-import ipaddress
+import logging
 from pathlib import Path
 from datetime import datetime, timezone
+import urllib.parse
 
 import feedparser
 import requests
-import trafilatura
-from concurrent.futures import ThreadPoolExecutor
-
-from quote import get_random_quote
 
 try:
     from groq import Groq
-except Exception:
+except ImportError:
     Groq = None
 
-import ahocorasick
-
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+CONFIG_FILE = BASE_DIR / "config" / "feeds.yaml"
+STATE_FILE = BASE_DIR / "data" / "rss_state.json"
 CONTENT_DIR = BASE_DIR / "content" / "posts"
-SEEN_FILE = BASE_DIR / ".seen_posts.json"
-CHECKPOINT_FILE = BASE_DIR / ".rss_checkpoint.json"
 
 CONTENT_DIR.mkdir(parents=True, exist_ok=True)
+(BASE_DIR / "data").mkdir(parents=True, exist_ok=True)
 
-RSS_FEEDS = [
-    "https://feeds.feedburner.com/TheHackersNews",
-    "https://krebsonsecurity.com/feed/",
-    "https://www.bleepingcomputer.com/feed/",
-    "https://securelist.com/feed/",
-    "https://www.schneier.com/feed/atom/",
-    "https://www.wired.com/feed/category/security/rss",
-    "https://databreaches.net/feed/",
-    "https://www.cisa.gov/cybersecurity-advisories/all.xml",
-    "https://www.cisa.gov/uscert/ncas/alerts.xml",
-    "https://www.zerodayinitiative.com/rss/published/",
-    "https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml",
-    "https://blog.talosintelligence.com/feeds/posts/default",
-    "https://unit42.paloaltonetworks.com/feed/",
-    "https://cloud.google.com/blog/topics/threat-intelligence/rss/",
-    "https://www.darkreading.com/rss.xml",
-    "https://www.securityweek.com/feed/",
-    "https://www.helpnetsecurity.com/feed/",
-    
-]
+def load_feeds():
+    if not CONFIG_FILE.exists():
+        logger.error(f"Config file not found: {CONFIG_FILE}")
+        return []
+    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f) or []
 
-MIN_POSTS_PER_CATEGORY = 3
-
-CATEGORY_KEYWORDS = {
-    "threat-intel": [
-        # Threat actors / campaigns
-        "apt", "threat actor", "threat group",
-        "campaign", "espionage", "nation-state",
-        "actor", "intrusion", "compromise",
-        "operation", "targeted attack",
-        "cyberattack", "attacker", "threat intelligence",
-        "iocs", "ttp", "kill chain",
-        "command and control", "c2",
-        "lateral movement", "credential theft",
-        "initial access", "persistence",
-
-        # Common actor names
-        "lazarus", "apt28", "apt29",
-        "cozy bear", "fancy bear",
-        "sandworm", "mustang panda",
-        "kimsuky", "volt typhoon",
-        "ghostwriter", "lockbit",
-        "black basta", "clop"
-    ],
-
-    "data-breaches": [
-        "breach", "data breach",
-        "leak", "data leak",
-        "exposed", "exposure",
-        "database leak", "database exposed",
-        "compromised", "customer data",
-        "records exposed", "unauthorized access",
-        "credential leak", "sensitive information",
-        "stolen data", "dumped",
-        "hack exposed", "privacy incident",
-        "information disclosure",
-        "pii", "personally identifiable information",
-        "email addresses leaked",
-        "password dump", "ransom payment"
-    ],
-
-    "cves": [
-        "cve-", "vulnerability",
-        "zero-day", "0day",
-        "exploit", "exploited",
-        "actively exploited",
-        "rce", "remote code execution",
-        "privilege escalation",
-        "kev", "known exploited vulnerability",
-        "security flaw", "patch",
-        "patch tuesday",
-        "authentication bypass",
-        "sandbox escape",
-        "command injection",
-        "sql injection",
-        "xss", "csrf",
-        "memory corruption",
-        "buffer overflow",
-        "arbitrary code execution",
-        "use-after-free",
-        "heap overflow",
-        "kernel flaw",
-        "firmware flaw"
-    ],
-
-    "malware": [
-        "malware", "ransomware",
-        "trojan", "worm",
-        "rootkit", "spyware",
-        "stealer", "infostealer",
-        "dropper", "payload",
-        "loader", "implant",
-        "botnet", "backdoor",
-        "rat", "remote access trojan",
-        "keylogger", "malicious code",
-        "cryptominer", "banking trojan",
-        "malspam", "wiper",
-        "cobalt strike", "emotet",
-        "qakbot", "trickbot",
-        "dridex", "darkgate",
-        "lockbit", "blackcat",
-        "akira", "ransom note"
-    ],
-
-    "research": [
-        "research", "analysis",
-        "report", "study",
-        "deep dive", "technical analysis",
-        "whitepaper", "findings",
-        "security research",
-        "investigation",
-        "case study",
-        "methodology",
-        "benchmark",
-        "statistics",
-        "annual report",
-        "quarterly report",
-        "trend analysis",
-        "forecast",
-        "insights"
-    ],
-}
-
-automaton = ahocorasick.Automaton()
-
-# Combine categories for overlapping words
-word_to_cats = {}
-for cat, words in CATEGORY_KEYWORDS.items():
-    for word in words:
-        if word not in word_to_cats:
-            word_to_cats[word] = []
-        word_to_cats[word].append(cat)
-
-for word, cats in word_to_cats.items():
-    automaton.add_word(word, (cats, word))
-
-automaton.make_automaton()
-
-session = requests.Session()
-session.headers.update({"User-Agent":"Mozilla/5.0"})
-
-client = None
-if Groq and os.getenv("GROQ_API_KEY"):
-    try:
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        print("Groq enabled")
-    except Exception:
-        pass
-
-
-def load_json(path, default):
-    if path.exists():
-        try:
-            with open(path, "r", encoding="utf-8") as f:
+def load_state():
+    if STATE_FILE.exists():
+        with open(STATE_FILE, "r", encoding="utf-8") as f:
+            try:
                 return json.load(f)
-        except (json.JSONDecodeError, OSError):
-            pass
-    return default
+            except json.JSONDecodeError:
+                return {"seen_urls": []}
+    return {"seen_urls": []}
 
+def save_state(state):
+    with open(STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
 
-def save_json(path, data):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+def normalize_url(url):
+    parsed = urllib.parse.urlparse(url)
+    # Remove tracking query parameters
+    query = urllib.parse.parse_qsl(parsed.query)
+    clean_query = [(k, v) for k, v in query if not k.startswith("utm_")]
+    parsed = parsed._replace(query=urllib.parse.urlencode(clean_query), fragment="")
+    return urllib.parse.urlunparse(parsed)
 
-
-def clean_slug(title, link=None):
-    slug = re.sub(r"[^a-z0-9\s-]", "", title.lower())
-    slug = re.sub(r"\s+", "-", slug).strip("-")
-    if len(slug) < 8:
-        slug = "intel-" + hashlib.md5((link or title).encode()).hexdigest()[:8]
-    return slug[:120]
-
-
-def article_hash(link):
-    return hashlib.sha256(link.encode()).hexdigest()
-
-
-def parse_date(entry):
-    for k in ("published_parsed", "updated_parsed"):
-        if entry.get(k):
-            return datetime(*entry[k][:6], tzinfo=timezone.utc)
-    return datetime.now(timezone.utc)
-
-
-def classify(title, text):
-    content = (title + " " + text).lower()
-    scores = {k:0 for k in CATEGORY_KEYWORDS}
-
-    # words can belong to multiple categories
-    # we want to count each unique word matched per category
-    found_words = set()
-    for end_index, (cats, word) in automaton.iter(content):
-        found_words.add((tuple(cats), word))
-
-    for cats, word in found_words:
-        for cat in cats:
-            scores[cat] += 1
-
-    best = max(scores, key=scores.get)
-    return best if scores[best] else "research"
-
-
-def is_safe_url(url):
+def generate_slug(title, date_str):
+    clean_title = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+    if len(clean_title) > 60:
+        clean_title = clean_title[:60].strip('-')
+    
+    date_prefix = "unknown"
     try:
-        parsed = urllib.parse.urlparse(url)
-        if parsed.scheme not in ("http", "https"):
-            return False
-        hostname = parsed.hostname
-        if not hostname:
-            return False
+        dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+        date_prefix = dt.strftime("%Y-%m-%d")
+    except ValueError:
+        pass
+        
+    return f"{date_prefix}-{clean_title}"
 
-        addr_info = socket.getaddrinfo(hostname, None)
-        for res in addr_info:
-            ip_str = res[4][0]
-            ip = ipaddress.ip_address(ip_str)
-            if not ip.is_global:
-                return False
-        return True
-    except Exception:
-        return False
-
-
-def fetch_article(url, max_redirects=5):
-    current_url = url
-    redirects = 0
-
-    while redirects <= max_redirects:
-        if not is_safe_url(current_url):
-            return ""
-
-        try:
-            r = session.get(current_url, timeout=20, allow_redirects=False)
-
-            if r.status_code in (301, 302, 303, 307, 308):
-                location = r.headers.get("Location")
-                if not location:
-                    break
-                # Handle relative redirects
-                current_url = urllib.parse.urljoin(current_url, location)
-                redirects += 1
-                continue
-
-            r.raise_for_status()
-            return trafilatura.extract(r.text) or ""
-        except Exception:
-            return ""
-
-    return ""
-
-
-def summarize(title, text):
-    if not text:
+def ask_groq_for_structured_data(title, description, source, category):
+    api_key = os.getenv("GROQ_API_KEY")
+    if not Groq or not api_key:
         return None
-    if client:
-        try:
-            r = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[{
-                    "role":"user",
-                    "content":f"Summarize in 3 concise paragraphs:\nTitle:{title}\n{text[:10000]}"
-                }],
-                temperature=0.2,
-                max_tokens=400
-            )
-            return r.choices[0].message.content.strip()
-        except Exception:
-            pass
-    return text[:1000]
+        
+    prompt = f"""You are a cybersecurity analyst. Read the following article title and description and generate a structured JSON response.
+Do NOT invent CVEs, threat actors, malware names, or details that are not in the text.
+Summarize the facts concisely.
 
+Article Title: {title}
+Article Description: {description}
+Original Source: {source}
+Primary Category: {category}
+
+Return ONLY valid JSON (no markdown wrapping) in this exact structure:
+{{
+  "title": "Normalized title string",
+  "summary": "A 1-2 paragraph professional threat intel summary. Do not fabricate facts.",
+  "tags": ["tag1", "tag2"]
+}}"""
+
+    try:
+        client = Groq(api_key=api_key)
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+            max_tokens=500,
+            response_format={"type": "json_object"}
+        )
+        
+        content = response.choices[0].message.content.strip()
+        parsed = json.loads(content)
+        
+        # Validation
+        if not parsed.get("summary") or not parsed.get("title"):
+            raise ValueError("Missing required fields in Groq JSON response.")
+            
+        return parsed
+    except Exception as e:
+        logger.warning(f"Groq API generation failed: {e}")
+        return None
+
+def fallback_summary(description):
+    clean_desc = re.sub(r'<[^>]+>', '', str(description))
+    if len(clean_desc) > 500:
+        clean_desc = clean_desc[:497] + "..."
+    return clean_desc
+
+def fetch_feed(feed_config, session):
+    url = feed_config.get("url")
+    if not url:
+        return []
+        
+    logger.info(f"Fetching feed: {feed_config['name']} ({url})")
+    try:
+        response = session.get(url, timeout=15)
+        response.raise_for_status()
+        feed_data = feedparser.parse(response.content)
+        return feed_data.entries
+    except Exception as e:
+        logger.error(f"Failed to fetch {feed_config['name']}: {e}")
+        return []
 
 def main():
-    print("Intel Balancer v4 Running")
-
-    seen = set(load_json(SEEN_FILE, []))
-    checkpoints = load_json(CHECKPOINT_FILE, {})
-
-    category_count = {k:0 for k in CATEGORY_KEYWORDS}
-
-    candidates = []
-
-    for feed_url in RSS_FEEDS:
-        feed = feedparser.parse(feed_url)
-        last_seen = checkpoints.get(feed_url)
-
-        for entry in feed.entries[:30]:
-            link = entry.get("link")
-            title = entry.get("title","" ).strip()
-            if not title or not link:
+    logger.info("Starting RSS Pipeline...")
+    feeds = load_feeds()
+    state = load_state()
+    seen_urls = set(state.get("seen_urls", []))
+    
+    session = requests.Session()
+    session.headers.update({"User-Agent": "Faultplane-RSS/1.0"})
+    
+    new_items = []
+    
+    for feed in feeds:
+        if not feed.get("enabled", True):
+            continue
+            
+        entries = fetch_feed(feed, session)
+        added_count = 0
+        
+        # We only process up to 5 items per feed per run to conserve Groq tokens
+        for entry in entries[:5]:
+            raw_url = entry.get("link", "")
+            if not raw_url:
                 continue
-
-            if not link.startswith(("http://", "https://")):
+                
+            norm_url = normalize_url(raw_url)
+            if norm_url in seen_urls:
                 continue
-
-            h = article_hash(link)
-            if h in seen:
-                continue
-
-            published = parse_date(entry)
-
-            if last_seen:
-                try:
-                    if published <= datetime.fromisoformat(last_seen):
-                        continue
-                except Exception:
-                    pass
-
-            raw = fetch_article(link)
-            if len(raw) < 250:
-                continue
-
-            category = classify(title, raw)
-
-            candidates.append({
-                "title": title,
-                "link": link,
-                "published": published,
-                "raw": raw,
-                "category": category,
-                "feed": feed_url,
-                "hash": h,
+                
+            raw_title = entry.get("title", "Untitled").strip()
+            
+            # Parse date
+            published_parsed = entry.get("published_parsed") or entry.get("updated_parsed")
+            if published_parsed:
+                dt = datetime(*published_parsed[:6], tzinfo=timezone.utc)
+                date_str = dt.isoformat()
+            else:
+                date_str = datetime.now(timezone.utc).isoformat()
+                
+            raw_description = entry.get("description", "") or entry.get("summary", "")
+            
+            logger.info(f"Processing new item: {raw_title}")
+            
+            # Use Groq for structured output
+            groq_data = ask_groq_for_structured_data(raw_title, raw_description, feed["name"], feed.get("category", "research"))
+            
+            if groq_data:
+                final_title = groq_data.get("title", raw_title)
+                final_summary = groq_data.get("summary", fallback_summary(raw_description))
+                final_tags = groq_data.get("tags", [feed.get("category", "research")])
+            else:
+                final_title = raw_title
+                final_summary = fallback_summary(raw_description)
+                final_tags = [feed.get("category", "research")]
+                
+            slug = generate_slug(final_title, date_str)
+            
+            new_items.append({
+                "title": final_title,
+                "description": final_summary[:150].replace('\n', ' ') + "...",
+                "source": feed["name"],
+                "source_url": norm_url,
+                "published": date_str,
+                "category": feed.get("category", "research"),
+                "tags": final_tags,
+                "slug": slug,
+                "summary": final_summary
             })
-
-    candidates.sort(key=lambda x: x["published"], reverse=True)
-
-    selected = []
-
-    for category in category_count:
-        cat_posts = [x for x in candidates if x["category"] == category]
-        selected.extend(cat_posts[:MIN_POSTS_PER_CATEGORY])
-
-    if len(selected) < MIN_POSTS_PER_CATEGORY * 5:
-        remaining = [x for x in candidates if x not in selected]
-        remaining.sort(key=lambda x: x["published"], reverse=True)
-        selected.extend(remaining[:10])
-
-    items_to_process = []
-    temp_category_count = category_count.copy()
-    for item in selected:
-        cat = item["category"]
-        if temp_category_count[cat] >= MIN_POSTS_PER_CATEGORY:
-            continue
-
-        slug = clean_slug(item["title"], item["link"])
-        path = CONTENT_DIR / f"{slug}.md"
-        if path.exists():
-            continue
-
-        items_to_process.append(item)
-        temp_category_count[cat] += 1 # Pre-increment to keep count accurate while pre-selecting
-
-    def process_item(item):
-        summary = summarize(item["title"], item["raw"])
-        if not summary:
-            return None
-        return item, summary
-
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        results = executor.map(process_item, items_to_process)
-
-    for result in results:
-        if not result:
-            continue
-
-        item, summary = result
-        cat = item["category"]
-        slug = clean_slug(item["title"], item["link"])
-        path = CONTENT_DIR / f"{slug}.md"
-
-        markdown = f"""---
-title: "{item['title'].replace('\"', "'") }"
-date: {item['published'].isoformat()}
-draft: false
-categories:
-  - {cat}
-author: "DedSec-Terminal"
+            
+            seen_urls.add(norm_url)
+            added_count += 1
+            
+            # Rate limit Groq calls if making many
+            time.sleep(1)
+            
+        logger.info(f"  -> Added {added_count} new items from {feed['name']}")
+        
+    # Write new items to markdown safely
+    for item in new_items:
+        tags_yaml = "\n".join([f'  - "{t}"' for t in item['tags']])
+        md_content = f"""---
+title: "{item['title'].replace('"', "'")}"
+description: "{item['description'].replace('"', "'")}"
+source: "{item['source']}"
+source_url: "{item['source_url']}"
+date: "{item['published']}"
+category: "{item['category']}"
+tags:
+{tags_yaml}
+slug: "{item['slug']}"
 ---
 
-{summary}
+{item['summary']}
 
 ---
-
-> *{get_random_quote()}*
-
-Source: [{item['title']}]({item['link']})
+**Source:** [{item['source']}]({item['source_url']})
 """
-
-        path.write_text(markdown, encoding="utf-8")
-
-        category_count[cat] += 1
-        seen.add(item["hash"])
-        checkpoints[item["feed"]] = item["published"].isoformat()
-
-        print(f"[{cat}] {path.name}")
-
-    save_json(SEEN_FILE, sorted(list(seen)))
-    save_json(CHECKPOINT_FILE, checkpoints)
-
-    print("\nFinal Category Balance:")
-    for k, v in category_count.items():
-        print(k, v)
-
+        filepath = CONTENT_DIR / f"{item['slug']}.md"
+        try:
+            filepath.write_text(md_content, encoding="utf-8")
+        except Exception as e:
+            logger.error(f"Failed to write file {filepath}: {e}")
+            
+    # Update state
+    state["seen_urls"] = list(seen_urls)
+    save_state(state)
+    logger.info(f"Pipeline finished. Total new items generated: {len(new_items)}")
 
 if __name__ == "__main__":
     main()

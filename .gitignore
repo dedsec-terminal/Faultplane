@@ -1,9 +1,7 @@
 # =========================
-# HUGO BUILD OUTPUT
+# STATIC BUILD OUTPUT
 # =========================
-public/
-resources/
-.hugo_build.lock
+dist/
 
 # =========================
 # OS / SYSTEM FILES

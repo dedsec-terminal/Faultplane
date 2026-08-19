@@ -1,7 +1,11 @@
 feedparser
-trafilatura
 requests
+trafilatura
+ahocorasick-rs
+groq
+markdown
+pyyaml
+jinja2
 lxml
 beautifulsoup4
-groq
 pyahocorasick
