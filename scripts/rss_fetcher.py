@@ -323,6 +323,9 @@ def main():
             if not title or not link:
                 continue
 
+            if not link.startswith(("http://", "https://")):
+                continue
+
             h = article_hash(link)
             if h in seen:
                 continue
