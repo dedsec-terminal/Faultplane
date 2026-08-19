@@ -4,6 +4,7 @@ description: "In August 2026, threat actor TheHatman claimed to have exfiltrated
 source: "Unit 42 (Palo Alto)"
 source_url: "https://unit42.paloaltonetworks.com/large-scale-credential-attacks/"
 date: "2026-08-18T19:05:33+00:00"
+ingested_at: "2026-08-18T19:05:33+00:00"
 category: "research"
 tags:
   - "credential theft"

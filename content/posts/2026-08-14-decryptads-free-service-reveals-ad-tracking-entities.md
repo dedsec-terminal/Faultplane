@@ -4,6 +4,7 @@ description: "Krebs on Security reports DecryptAds, a free tool that scrapes and
 source: "Krebs on Security"
 source_url: "https://krebsonsecurity.com/2026/08/whos-tracking-you-use-this-new-service-to-find-out/"
 date: "2026-08-14T11:24:35+00:00"
+ingested_at: "2026-08-14T11:24:35+00:00"
 category: "threat-intel"
 tags:
   - "adtech"

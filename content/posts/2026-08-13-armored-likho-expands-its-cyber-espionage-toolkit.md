@@ -4,6 +4,7 @@ description: "Kaspersky analysts dissect a new Armored Likho campaign that masqu
 source: "Securelist"
 source_url: "https://securelist.com/armored-likho-still-toolkit/121033/"
 date: "2026-08-13T08:00:15+00:00"
+ingested_at: "2026-08-13T08:00:15+00:00"
 category: "campaigns"
 tags:
   - "Armored Likho"

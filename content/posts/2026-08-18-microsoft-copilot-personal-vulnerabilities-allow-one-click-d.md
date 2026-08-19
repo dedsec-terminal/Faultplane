@@ -4,6 +4,7 @@ description: "Varonis Threat Labs disclosed three vulnerabilities in Microsoft C
 source: "The Hacker News"
 source_url: "https://thehackernews.com/2026/08/microsoft-copilot-personal-flaws-could.html"
 date: "2026-08-18T17:47:22+00:00"
+ingested_at: "2026-08-18T17:47:22+00:00"
 category: "threat-intel"
 tags:
   - "Microsoft Copilot"

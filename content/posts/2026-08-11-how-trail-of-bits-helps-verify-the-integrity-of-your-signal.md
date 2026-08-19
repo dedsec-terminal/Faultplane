@@ -4,6 +4,7 @@ description: "Signal\u2019s Automatic Key Verification (AKV) uses key transparen
 source: "Trail of Bits"
 source_url: "https://blog.trailofbits.com/2026/08/11/how-trail-of-bits-helps-verify-the-integrity-of-your-signal-chats/"
 date: "2026-08-11T17:30:00+00:00"
+ingested_at: "2026-08-11T17:30:00+00:00"
 category: "research"
 tags:
   - "Signal"

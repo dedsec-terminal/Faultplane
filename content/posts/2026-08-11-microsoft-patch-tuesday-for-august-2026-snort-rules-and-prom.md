@@ -4,6 +4,7 @@ description: "Microsoft released its August 2026 Patch Tuesday update, addressin
 source: "Cisco Talos"
 source_url: "https://blog.talosintelligence.com/microsoft-patch-tuesday-for-august-2026/"
 date: "2026-08-11T22:21:02+00:00"
+ingested_at: "2026-08-11T22:21:02+00:00"
 category: "vulnerabilities"
 tags:
   - "Microsoft"

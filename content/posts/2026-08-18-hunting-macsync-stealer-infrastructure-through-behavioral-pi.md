@@ -4,6 +4,7 @@ description: "Microsoft Security identified the MacSync Stealer malware, which r
 source: "Microsoft Security"
 source_url: "https://www.microsoft.com/en-us/security/blog/2026/08/18/hunting-macsync-stealer-infrastructure-through-behavioral-pivots/"
 date: "2026-08-18T17:08:28+00:00"
+ingested_at: "2026-08-18T17:08:28+00:00"
 category: "threat-intel"
 tags:
   - "MacSync Stealer"

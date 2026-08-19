@@ -4,6 +4,7 @@ description: "Uniswap v4 introduces hooks that let developers add custom logic t
 source: "Trail of Bits"
 source_url: "https://blog.trailofbits.com/2026/07/30/building-secure-uniswap-v4-hooks/"
 date: "2026-07-30T11:00:00+00:00"
+ingested_at: "2026-07-30T11:00:00+00:00"
 category: "research"
 tags:
   - "uniswap"

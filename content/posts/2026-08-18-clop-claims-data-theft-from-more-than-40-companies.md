@@ -4,6 +4,7 @@ description: "A Russian\u2011speaking extortion group, Clop, announced it stole 
 source: "DataBreaches.net"
 source_url: "https://databreaches.net/2026/08/18/clop-claims-data-theft-from-more-than-40-companies/"
 date: "2026-08-18T20:21:07+00:00"
+ingested_at: "2026-08-18T20:21:07+00:00"
 category: "data-breaches"
 tags:
   - "clop"

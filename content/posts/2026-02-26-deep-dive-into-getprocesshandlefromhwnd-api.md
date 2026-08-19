@@ -4,6 +4,7 @@ description: "The article examines the Windows API GetProcessHandleFromHwnd, fir
 source: "Google Project Zero"
 source_url: "https://projectzero.google/2026/02/gphfh-deep-dive.html"
 date: "2026-02-26T08:00:00+00:00"
+ingested_at: "2026-02-26T08:00:00+00:00"
 category: "research"
 tags:
   - "GetProcessHandleFromHwnd"

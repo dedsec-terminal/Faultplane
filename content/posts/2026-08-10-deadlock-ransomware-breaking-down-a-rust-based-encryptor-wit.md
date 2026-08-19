@@ -4,6 +4,7 @@ description: "Microsoft Threat Intelligence analyzes the DeadLock ransomware ope
 source: "Microsoft Security"
 source_url: "https://www.microsoft.com/en-us/security/blog/2026/08/10/deadlock-ransomware-breaking-down-a-rust-based-encryptor-with-decentralized-recovery-infrastructure/"
 date: "2026-08-10T15:00:00+00:00"
+ingested_at: "2026-08-10T15:00:00+00:00"
 category: "threat-intel"
 tags:
   - "DeadLock"

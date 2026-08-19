@@ -4,6 +4,7 @@ description: "A JSP web shell linked to the Clop ransomware group was deployed a
 source: "The Hacker News"
 source_url: "https://thehackernews.com/2026/08/clop-linked-windchill-web-shell.html"
 date: "2026-08-19T10:00:30.671210+00:00"
+ingested_at: "2026-08-19T10:00:30.671210+00:00"
 category: "threat-intel"
 tags:
   - "clop"

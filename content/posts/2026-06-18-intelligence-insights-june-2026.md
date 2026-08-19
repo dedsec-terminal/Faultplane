@@ -4,6 +4,7 @@ description: "ClearFake continues to rank as the top threat actor, maintaining i
 source: "Red Canary"
 source_url: "https://redcanary.com/blog/threat-intelligence/intelligence-insights-june-2026/"
 date: "2026-06-18T17:49:20+00:00"
+ingested_at: "2026-06-18T17:49:20+00:00"
 category: "threat-intel"
 tags:
   - "ClearFake"

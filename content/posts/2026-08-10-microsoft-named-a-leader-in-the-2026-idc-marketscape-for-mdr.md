@@ -4,6 +4,7 @@ description: "Microsoft has been named a Leader in the 2026 IDC MarketScape for 
 source: "Microsoft Security"
 source_url: "https://www.microsoft.com/en-us/security/blog/2026/08/10/microsoft-named-a-leader-in-the-2026-idc-marketscape-for-mdr-mxdr-for-the-enterprise/"
 date: "2026-08-10T16:00:00+00:00"
+ingested_at: "2026-08-10T16:00:00+00:00"
 category: "threat-intel"
 tags:
   - "Microsoft"

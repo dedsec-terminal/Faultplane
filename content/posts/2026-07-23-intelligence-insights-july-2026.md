@@ -4,6 +4,7 @@ description: "Red Canary's Intelligence Insights for July 2026 highlights ClearF
 source: "Red Canary"
 source_url: "https://redcanary.com/blog/threat-intelligence/intelligence-insights-july-2026/"
 date: "2026-07-23T17:12:43+00:00"
+ingested_at: "2026-07-23T17:12:43+00:00"
 category: "threat-intel"
 tags:
   - "ClearFake"

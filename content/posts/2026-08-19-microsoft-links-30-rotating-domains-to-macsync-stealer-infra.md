@@ -4,6 +4,7 @@ description: "Microsoft Defender experts identified more than 30 rotating web do
 source: "The Hacker News"
 source_url: "https://thehackernews.com/2026/08/microsoft-links-30-rotating-domains-to.html"
 date: "2026-08-19T10:00:30.673060+00:00"
+ingested_at: "2026-08-19T10:00:30.673060+00:00"
 category: "threat-intel"
 tags:
   - "macOS"

@@ -4,6 +4,7 @@ description: "Unit 42\u2019s analysis of the Aeternum botnet loader reveals a no
 source: "Unit 42 (Palo Alto)"
 source_url: "https://unit42.paloaltonetworks.com/aeternum-blockchain-c2-analysis/"
 date: "2026-08-10T22:00:02+00:00"
+ingested_at: "2026-08-10T22:00:02+00:00"
 category: "research"
 tags:
   - "Aeternum"

@@ -4,6 +4,7 @@ description: "A zero\u2011day integer\u2011overflow flaw in Clam AntiVirus\u2019
 source: "Zero Day Initiative"
 source_url: "http://www.zerodayinitiative.com/advisories/ZDI-26-583/"
 date: "2026-08-13T05:00:00+00:00"
+ingested_at: "2026-08-13T05:00:00+00:00"
 category: "cves"
 tags:
   - "clamav"

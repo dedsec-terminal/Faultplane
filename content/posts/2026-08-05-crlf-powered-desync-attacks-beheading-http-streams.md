@@ -4,6 +4,7 @@ description: "The paper demonstrates that CRLF injection can cause HTTP header d
 source: "PortSwigger Research"
 source_url: "https://portswigger.net/research/crlf-powered-desync-attacks"
 date: "2026-08-05T23:30:00+00:00"
+ingested_at: "2026-08-05T23:30:00+00:00"
 category: "research"
 tags:
   - "CRLF"

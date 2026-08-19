@@ -4,6 +4,7 @@ description: "Microsoft has announced that Windows 11 Home and Pro editions of t
 source: "Bleeping Computer"
 source_url: "https://www.bleepingcomputer.com/news/microsoft/windows-11-24h2-home-and-pro-reach-end-of-support-in-2-months/"
 date: "2026-08-19T09:10:20+00:00"
+ingested_at: "2026-08-19T09:10:20+00:00"
 category: "other"
 tags:
   - "Windows 11"

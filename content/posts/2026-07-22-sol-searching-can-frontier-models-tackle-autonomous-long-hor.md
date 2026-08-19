@@ -4,6 +4,7 @@ description: "SentinelOne Labs released a real\u2011world benchmark that evaluat
 source: "SentinelOne Labs"
 source_url: "https://www.sentinelone.com/labs/frontier-models-tackle-autonomous-long-horizon-malware-analysis/"
 date: "2026-07-22T16:55:29+00:00"
+ingested_at: "2026-07-22T16:55:29+00:00"
 category: "malware"
 tags:
   - "AI"

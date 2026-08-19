@@ -4,6 +4,7 @@ description: "PortSwigger researchers built an autonomous AI system that can inv
 source: "PortSwigger Research"
 source_url: "https://portswigger.net/research/can-ai-do-novel-security-research"
 date: "2026-08-05T19:30:00+00:00"
+ingested_at: "2026-08-05T19:30:00+00:00"
 category: "research"
 tags:
   - "AI"

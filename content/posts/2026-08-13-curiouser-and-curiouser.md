@@ -4,6 +4,7 @@ description: "William discusses the \"Make Hazel a Hacker\" segment from Beers w
 source: "Cisco Talos"
 source_url: "https://blog.talosintelligence.com/curiouser-and-curiouser/"
 date: "2026-08-13T18:00:18+00:00"
+ingested_at: "2026-08-13T18:00:18+00:00"
 category: "research"
 tags:
   - "Talos"

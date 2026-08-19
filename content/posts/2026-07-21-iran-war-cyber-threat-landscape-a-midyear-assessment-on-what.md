@@ -4,6 +4,7 @@ description: "SentinelOne Labs\u2019 Tom Hegel released an initial assessment of
 source: "SentinelOne Labs"
 source_url: "https://www.sentinelone.com/labs/iran-war-cyber-threat-landscape-a-midyear-assessment-on-what-matters/"
 date: "2026-07-21T13:00:21+00:00"
+ingested_at: "2026-07-21T13:00:21+00:00"
 category: "research"
 tags:
   - "Iran war"

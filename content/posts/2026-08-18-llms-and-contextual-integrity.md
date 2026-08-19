@@ -4,6 +4,7 @@ description: "The article discusses two papers on contextual integrity in LLMs, 
 source: "Schneier on Security"
 source_url: "https://www.schneier.com/blog/archives/2026/08/llms-and-contextual-integrity.html"
 date: "2026-08-18T10:40:16+00:00"
+ingested_at: "2026-08-18T10:40:16+00:00"
 category: "research"
 tags:
   - "LLMs"

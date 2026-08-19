@@ -4,6 +4,7 @@ description: "Heights Finance, a U.S. financial services provider, suffered a da
 source: "Malwarebytes Labs"
 source_url: "https://www.malwarebytes.com/blog/data-breaches/2026/08/heights-finance-data-breach-what-customers-need-to-know"
 date: "2026-08-18T10:36:14+00:00"
+ingested_at: "2026-08-18T10:36:14+00:00"
 category: "data-breaches"
 tags:
   - "data-breach"

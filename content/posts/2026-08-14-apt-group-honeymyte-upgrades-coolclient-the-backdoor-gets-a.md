@@ -4,6 +4,7 @@ description: "Our experts discovered a new CoolClient backdoor variant with a ke
 source: "Securelist"
 source_url: "https://securelist.com/honeymyte-coolclient-driver-rootkit/121028/"
 date: "2026-08-14T09:00:14+00:00"
+ingested_at: "2026-08-14T09:00:14+00:00"
 category: "malware"
 tags:
   - "APT"

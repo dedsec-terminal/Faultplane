@@ -4,6 +4,7 @@ description: "The post explains how AWS Nitro Enclaves can integrate with AWS Ke
 source: "Trail of Bits"
 source_url: "https://blog.trailofbits.com/2026/08/05/a-few-notes-on-aws-nitro-enclaves-kms-integration/"
 date: "2026-08-05T11:00:00+00:00"
+ingested_at: "2026-08-05T11:00:00+00:00"
 category: "research"
 tags:
   - "AWS Nitro Enclaves"

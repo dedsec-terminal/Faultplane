@@ -4,6 +4,7 @@ description: "Ransomware\u2011as\u2011a\u2011Service group Chaos released 235\u2
 source: "DataBreaches.net"
 source_url: "https://databreaches.net/2026/08/17/235-gb-of-phi-and-internal-documents-dumped-chaos-claims-it-comes-from-healthcare-highways/"
 date: "2026-08-17T17:45:24+00:00"
+ingested_at: "2026-08-17T17:45:24+00:00"
 category: "data-breaches"
 tags:
   - "data-breaches"

@@ -4,6 +4,7 @@ description: "A remote attacker can trigger an infinite loop in dnsmasq's DNSSEC
 source: "Zero Day Initiative"
 source_url: "http://www.zerodayinitiative.com/advisories/ZDI-26-584/"
 date: "2026-08-13T05:00:00+00:00"
+ingested_at: "2026-08-13T05:00:00+00:00"
 category: "cves"
 tags:
   - "dnsmasq"

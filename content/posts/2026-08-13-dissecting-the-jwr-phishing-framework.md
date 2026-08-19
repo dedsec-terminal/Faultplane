@@ -4,6 +4,7 @@ description: "Cisco Talos uncovered an undocumented phishing framework dubbed 'J
 source: "Cisco Talos"
 source_url: "https://blog.talosintelligence.com/dissecting-the-jwr-phishing-framework/"
 date: "2026-08-13T10:00:35+00:00"
+ingested_at: "2026-08-13T10:00:35+00:00"
 category: "research"
 tags:
   - "phishing"

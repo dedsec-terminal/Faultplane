@@ -4,6 +4,7 @@ description: "A directory traversal flaw in Cisco Identity Services Engine\u2019
 source: "Zero Day Initiative"
 source_url: "http://www.zerodayinitiative.com/advisories/ZDI-26-582/"
 date: "2026-08-13T05:00:00+00:00"
+ingested_at: "2026-08-13T05:00:00+00:00"
 category: "cves"
 tags:
   - "Cisco"

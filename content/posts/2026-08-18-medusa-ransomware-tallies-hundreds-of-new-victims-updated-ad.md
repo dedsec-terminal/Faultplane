@@ -4,6 +4,7 @@ description: "The ransomware-as-a-service group Medusa has expanded its operatio
 source: "DataBreaches.net"
 source_url: "https://databreaches.net/2026/08/18/medusa-ransomware-tallies-hundreds-of-new-victims-says-updated-advisory-on-groups-tactics/"
 date: "2026-08-18T20:20:47+00:00"
+ingested_at: "2026-08-18T20:20:47+00:00"
 category: "threat-intel"
 tags:
   - "Medusa"

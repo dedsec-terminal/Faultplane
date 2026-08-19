@@ -4,6 +4,7 @@ description: "The FBI reports that the Medusa ransomware gang has breached more 
 source: "Bleeping Computer"
 source_url: "https://www.bleepingcomputer.com/news/security/cisa-medusa-ransomware-hit-over-500-critical-infrastructure-orgs/"
 date: "2026-08-19T08:00:48+00:00"
+ingested_at: "2026-08-19T08:00:48+00:00"
 category: "threat-intel"
 tags:
   - "Medusa"

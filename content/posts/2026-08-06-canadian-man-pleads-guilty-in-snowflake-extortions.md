@@ -4,6 +4,7 @@ description: "A 26\u2011year\u2011old Canadian, Connor Riley Moucka, known as a 
 source: "Krebs on Security"
 source_url: "https://krebsonsecurity.com/2026/08/canadian-man-pleads-guilty-in-snowflake-extortions/"
 date: "2026-08-06T17:00:56+00:00"
+ingested_at: "2026-08-06T17:00:56+00:00"
 category: "threat-intel"
 tags:
   - "Snowflake"

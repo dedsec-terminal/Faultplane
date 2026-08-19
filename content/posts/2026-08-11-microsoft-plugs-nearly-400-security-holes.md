@@ -4,6 +4,7 @@ description: "Microsoft released security updates that address at least 398 vuln
 source: "Krebs on Security"
 source_url: "https://krebsonsecurity.com/2026/08/microsoft-plugs-nearly-400-security-holes/"
 date: "2026-08-11T21:28:35+00:00"
+ingested_at: "2026-08-11T21:28:35+00:00"
 category: "threat-intel"
 tags:
   - "Microsoft"

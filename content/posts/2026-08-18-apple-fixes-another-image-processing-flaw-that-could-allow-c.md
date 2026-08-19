@@ -4,6 +4,7 @@ description: "Apple released security updates for iOS, iPadOS, and macOS Tahoe, 
 source: "Malwarebytes Labs"
 source_url: "https://www.malwarebytes.com/blog/bugs/2026/08/apple-fixes-another-image-processing-flaw-that-could-allow-code-execution"
 date: "2026-08-18T14:55:04+00:00"
+ingested_at: "2026-08-18T14:55:04+00:00"
 category: "vulnerabilities"
 tags:
   - "Apple"

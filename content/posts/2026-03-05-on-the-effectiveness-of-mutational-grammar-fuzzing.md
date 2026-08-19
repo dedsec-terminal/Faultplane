@@ -4,6 +4,7 @@ description: "Mutational grammar fuzzing uses a predefined grammar to mutate inp
 source: "Google Project Zero"
 source_url: "https://projectzero.google/2026/03/mutational-grammar-fuzzing.html"
 date: "2026-03-05T08:00:00+00:00"
+ingested_at: "2026-03-05T08:00:00+00:00"
 category: "research"
 tags:
   - "fuzzing"

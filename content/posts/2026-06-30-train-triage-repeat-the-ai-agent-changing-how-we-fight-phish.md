@@ -4,6 +4,7 @@ description: "Red Canary developed a super agent that combines machine learning,
 source: "Red Canary"
 source_url: "https://redcanary.com/blog/threat-detection/phishing-ai-agent/"
 date: "2026-06-30T12:33:22+00:00"
+ingested_at: "2026-06-30T12:33:22+00:00"
 category: "threat-intel"
 tags:
   - "AI"

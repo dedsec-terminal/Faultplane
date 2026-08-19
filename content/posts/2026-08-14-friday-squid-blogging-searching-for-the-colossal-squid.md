@@ -4,6 +4,7 @@ description: "A video explores undersea life, showing how bright white lights sc
 source: "Schneier on Security"
 source_url: "https://www.schneier.com/blog/archives/2026/08/friday-squid-blogging-searching-for-the-colossal-squid-2.html"
 date: "2026-08-14T21:01:49+00:00"
+ingested_at: "2026-08-14T21:01:49+00:00"
 category: "other"
 tags:
   - "marine biology"

@@ -186,10 +186,18 @@ def main():
         tags_yaml = "\n".join([f'  - "{t}"' for t in tags])
         
         try:
-            pub_dt = datetime.fromisoformat(meta["published"].replace("Z", "+00:00"))
-            fmt_date = pub_dt.isoformat()
+            pub_dt = datetime.fromisoformat(meta.get("published", "").replace("Z", "+00:00"))
+            pub_date_str = pub_dt.isoformat()
         except:
-            fmt_date = now.isoformat()
+            pub_date_str = now.isoformat()
+            
+        try:
+            mod_dt = datetime.fromisoformat(meta.get("modified", "").replace("Z", "+00:00"))
+            mod_date_str = mod_dt.isoformat()
+        except:
+            mod_date_str = pub_date_str
+            
+        ingested_at_str = datetime.now(timezone.utc).isoformat()
             
         kev_yaml = ""
         if kev_status:
@@ -204,7 +212,10 @@ title: {json.dumps(cve_id)}
 description: {json.dumps(summary[:150] + "...")}
 source: "NVD"
 source_url: "https://nvd.nist.gov/vuln/detail/{cve_id}"
-date: {json.dumps(fmt_date)}
+published: {json.dumps(pub_date_str)}
+last_modified: {json.dumps(mod_date_str)}
+ingested_at: {json.dumps(ingested_at_str)}
+date: {json.dumps(mod_date_str)}
 category: "cves"
 cve: {json.dumps(cve_id)}
 cvss: {json.dumps(str(meta['cvss']))}

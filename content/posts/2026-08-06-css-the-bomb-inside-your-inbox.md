@@ -4,6 +4,7 @@ description: "PortSwigger research by Gareth Heyes shows that many webmail clien
 source: "PortSwigger Research"
 source_url: "https://portswigger.net/research/css-the-bomb-inside-your-inbox"
 date: "2026-08-06T22:00:00+00:00"
+ingested_at: "2026-08-06T22:00:00+00:00"
 category: "research"
 tags:
   - "webmail"

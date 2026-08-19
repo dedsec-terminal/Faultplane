@@ -4,6 +4,7 @@ description: "The ISC Stormcast for Wednesday, August 19th, 2026 delivers a dail
 source: "SANS Internet Storm Center"
 source_url: "https://isc.sans.edu/diary/rss/33258"
 date: "2026-08-19T02:00:03+00:00"
+ingested_at: "2026-08-19T02:00:03+00:00"
 category: "threat-intel"
 tags:
   - "ISC"

@@ -4,6 +4,7 @@ description: "Criminals target public Wi\u2011Fi routers in hotels, conference c
 source: "Schneier on Security"
 source_url: "https://www.schneier.com/blog/archives/2026/08/hacking-public-wi-fi-dns-to-steal-credentials.html"
 date: "2026-08-17T11:18:03+00:00"
+ingested_at: "2026-08-17T11:18:03+00:00"
 category: "threat-intel"
 tags:
   - "public Wi‑Fi"

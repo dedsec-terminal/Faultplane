@@ -4,6 +4,7 @@ description: "Comcast\u2019s Xfinity Shield platform now uses Wi\u2011Fi signals
 source: "Bleeping Computer"
 source_url: "https://www.bleepingcomputer.com/news/security/comcast-turns-your-xfinity-wifi-into-a-home-motion-detector/"
 date: "2026-08-18T20:14:58+00:00"
+ingested_at: "2026-08-18T20:14:58+00:00"
 category: "research"
 tags:
   - "comcast"

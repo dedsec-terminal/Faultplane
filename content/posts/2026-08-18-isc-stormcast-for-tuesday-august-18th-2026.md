@@ -4,6 +4,7 @@ description: "Daily threat\u2011intelligence briefing from the SANS Internet Sto
 source: "SANS Internet Storm Center"
 source_url: "https://isc.sans.edu/diary/rss/33256"
 date: "2026-08-18T02:00:03+00:00"
+ingested_at: "2026-08-18T02:00:03+00:00"
 category: "threat-intel"
 tags:
   - "ISC"

@@ -4,6 +4,7 @@ description: "Unit 42 reports that Kimwolf v7 expands its botnet to target Andro
 source: "Unit 42 (Palo Alto)"
 source_url: "https://unit42.paloaltonetworks.com/kimwolf-v7-botnet-malware/"
 date: "2026-08-11T10:00:16+00:00"
+ingested_at: "2026-08-11T10:00:16+00:00"
 category: "research"
 tags:
   - "botnet"

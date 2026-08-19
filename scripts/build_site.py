@@ -55,6 +55,28 @@ def load_markdown_files(directory):
         except ValueError:
             formatted_date = str(date_str)
             
+        published = frontmatter.get("published")
+        published_formatted = ""
+        if published:
+            if isinstance(published, datetime):
+                published = published.isoformat()
+            try:
+                pub_dt = datetime.fromisoformat(str(published).replace("Z", "+00:00"))
+                published_formatted = pub_dt.strftime("%b %d, %Y %H:%M UTC")
+            except ValueError:
+                published_formatted = str(published)
+                
+        ingested_at = frontmatter.get("ingested_at")
+        ingested_formatted = ""
+        if ingested_at:
+            if isinstance(ingested_at, datetime):
+                ingested_at = ingested_at.isoformat()
+            try:
+                ing_dt = datetime.fromisoformat(str(ingested_at).replace("Z", "+00:00"))
+                ingested_formatted = ing_dt.strftime("%b %d, %Y %H:%M UTC")
+            except ValueError:
+                ingested_formatted = str(ingested_at)
+
         category = str(frontmatter.get("category", "other")).lower().strip()
         tags = frontmatter.get("tags", [])
 
@@ -66,6 +88,10 @@ def load_markdown_files(directory):
             "title": frontmatter.get("title", "Untitled"),
             "date": str(date_str),
             "formatted_date": formatted_date,
+            "published": str(published) if published else None,
+            "published_formatted": published_formatted,
+            "ingested_at": str(ingested_at) if ingested_at else None,
+            "ingested_formatted": ingested_formatted,
             "category": category,
             "tags": tags,
             "slug": slug,
@@ -124,8 +150,8 @@ def build_site():
     cves = load_markdown_files(CVES_DIR)
     
     all_content = posts + cves
-    all_content.sort(key=lambda x: x["date"], reverse=True)
-    posts.sort(key=lambda x: x["date"], reverse=True)
+    all_content.sort(key=lambda x: x.get("ingested_at") or x["date"], reverse=True)
+    posts.sort(key=lambda x: x.get("ingested_at") or x["date"], reverse=True)
     cves.sort(key=lambda x: x["date"], reverse=True)
     
     # Generate content.json for search
@@ -135,6 +161,8 @@ def build_site():
             "title": item["title"],
             "url": item["url"],
             "date": item["date"],
+            "published": item.get("published"),
+            "ingested_at": item.get("ingested_at"),
             "category": item["category"],
             "tags": item["tags"]
         })
@@ -152,8 +180,14 @@ def build_site():
             source_name = item.get("source") or "Original Article"
             source_html = f'\n<div class="post-source"><strong>Source:</strong> <a href="{item["source_url"]}" target="_blank" rel="noopener noreferrer">{source_name}</a></div>\n'
             
+        date_html = ""
+        if item.get("published") and item.get("ingested_at"):
+            date_html = f'<span class="date">Published: {item["published_formatted"]}</span>\n            <span class="date">Ingested: {item["ingested_formatted"]}</span>'
+        else:
+            date_html = f'<span class="date">{item["formatted_date"]}</span>'
+
         post_content = post_tmpl.replace("{{ title }}", item["title"]) \
-                                .replace("{{ date }}", item["formatted_date"]) \
+                                .replace("{{ date_html }}", date_html) \
                                 .replace("{{ body }}", item["body"]) \
                                 .replace("{{ quote_html }}", quote_html) \
                                 .replace("{{ source_html }}", source_html)

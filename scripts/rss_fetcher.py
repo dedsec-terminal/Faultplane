@@ -192,7 +192,7 @@ def main():
                 "description": final_summary[:150].replace('\n', ' ') + "...",
                 "source": feed["name"],
                 "source_url": norm_url,
-                "ingested_date": date_str,
+                "ingested_at": date_str,
                 "published": orig_date_str,
                 "category": final_category,
                 "tags": final_tags,
@@ -226,7 +226,9 @@ title: {json.dumps(item['title'])}
 description: {json.dumps(item['description'])}
 source: {json.dumps(item['source'])}
 source_url: {json.dumps(item['source_url'])}
-date: {json.dumps(item['ingested_date'])}
+published: {json.dumps(item['published'])}
+ingested_at: {json.dumps(item['ingested_at'])}
+date: {json.dumps(item['ingested_at'])}
 category: {json.dumps(item['category'])}
 tags:
 {tags_yaml}

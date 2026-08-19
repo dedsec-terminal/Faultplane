@@ -4,6 +4,7 @@ description: "The Nepalese National Cyber Security Centre (NCSC) has joined Have
 source: "Troy Hunt (Have I Been Pwned)"
 source_url: "https://www.troyhunt.com/welcoming-the-nepalese-government-to-have-i-been-pwned/"
 date: "2026-08-03T06:38:05+00:00"
+ingested_at: "2026-08-03T06:38:05+00:00"
 category: "data-breaches"
 tags:
   - "Have I Been Pwned"

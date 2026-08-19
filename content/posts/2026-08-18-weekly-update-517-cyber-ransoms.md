@@ -4,6 +4,7 @@ description: "Troy Hunt's Weekly Update 517 highlights the current ransomware la
 source: "Troy Hunt (Have I Been Pwned)"
 source_url: "https://www.troyhunt.com/weekly-update-517/"
 date: "2026-08-18T03:44:58+00:00"
+ingested_at: "2026-08-18T03:44:58+00:00"
 category: "threat-intel"
 tags:
   - "ransomware"
