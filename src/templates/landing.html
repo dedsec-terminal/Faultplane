@@ -1,48 +1,40 @@
-<div class="landing-header">
-    <h2>Threat Intelligence Dashboard</h2>
-    <p>Automated intelligence aggregation, CVE tracking, and malware analysis.</p>
-</div>
+<header class="landing-header">
+    <h1>Threat Intelligence Dashboard</h1>
+    <p>Automated threat telemetry, CVE tracking, and adversary research.</p>
+    <div class="telemetry-bar" aria-label="Archive Telemetry">
+        <span class="telemetry-chip"><strong>{{ stats.total_items }}</strong> Indexed</span>
+        <span class="telemetry-chip"><strong>{{ stats.total_cves }}</strong> CVEs</span>
+        <span class="telemetry-chip telemetry-kev"><strong>{{ stats.kev_count }}</strong> CISA KEV</span>
+        <span class="telemetry-chip"><strong>{{ stats.source_count }}</strong> Sources</span>
+    </div>
+</header>
 
 <div class="landing-grid">
-    <div class="landing-section">
-        <h3><a href="/Faultplane/categories/threat-intel.html">Threat Intelligence</a></h3>
+    {% for section in sections %}
+    <section class="landing-section{% if section.full_width %} full-width{% endif %}">
+        <h2><a href="{{ section.href }}">{{ section.title }}</a></h2>
         <div class="feed-container">
-            {{ latest_intel }}
+            {% if section['items'] %}
+            <ul class="post-list compact-list">
+                {% for item in section['items'] %}
+                <li>
+                    <a href="{{ item.url }}">{{ item.title }}</a>
+                    {% if item.type == 'cve' %}
+                    <span class="row-badges">
+                        {% if item.kev %}<span class="badge badge-kev">KEV</span>{% endif %}
+                        {% if item.severity and item.severity != 'Unknown' %}
+                        <span class="badge badge-sev badge-{{ item.severity_slug }}">{{ item.severity }}</span>
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-state">No recent activity found for this category.</p>
+            {% endif %}
         </div>
-        <a href="/Faultplane/categories/threat-intel.html" class="view-all">View All Intelligence &raquo;</a>
-    </div>
-
-    <div class="landing-section">
-        <h3><a href="/Faultplane/cves/index.html">Latest Vulnerabilities (CVEs)</a></h3>
-        <div class="feed-container">
-            {{ latest_cves }}
-        </div>
-        <a href="/Faultplane/cves/index.html" class="view-all">View All CVEs &raquo;</a>
-    </div>
-</div>
-
-<div class="landing-grid">
-    <div class="landing-section">
-        <h3><a href="/Faultplane/categories/data-breaches.html">Data Breaches</a></h3>
-        <div class="feed-container">
-            {{ latest_breaches }}
-        </div>
-        <a href="/Faultplane/categories/data-breaches.html" class="view-all">View All Breaches &raquo;</a>
-    </div>
-
-    <div class="landing-section">
-        <h3><a href="/Faultplane/categories/research.html">Security Research</a></h3>
-        <div class="feed-container">
-            {{ latest_research }}
-        </div>
-        <a href="/Faultplane/categories/research.html" class="view-all">View All Research &raquo;</a>
-    </div>
-</div>
-
-<div class="landing-section full-width">
-    <h3><a href="/Faultplane/categories/malware.html">Recent Malware Activity</a></h3>
-    <div class="feed-container">
-        {{ latest_malware }}
-    </div>
-    <a href="/Faultplane/categories/malware.html" class="view-all">View All Malware &raquo;</a>
+        <a href="{{ section.href }}" class="view-all">{{ section.link_label }} &raquo;</a>
+    </section>
+    {% endfor %}
 </div>

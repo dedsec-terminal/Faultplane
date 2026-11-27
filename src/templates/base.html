@@ -4,57 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <meta name="description" content="Faultplane - Cybersecurity Intelligence Platform">
-    <link rel="stylesheet" href="/Faultplane/css/style.css">
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;," />
+    <meta name="description" content="{{ meta_description }}">
+    <meta name="theme-color" content="#0A0A0A">
+    <link rel="icon" href="{{ base_url }}/images/favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ base_url }}/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ base_url }}/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ base_url }}/images/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ base_url }}/css/style.css">
 </head>
-<body>
+<body data-base-url="{{ base_url }}">
     <div class="layout">
         <aside class="sidebar">
             <header>
-                <h1><a href="/Faultplane/index.html">FAULTPLANE</a></h1>
+                <div class="brand"><a href="{{ base_url }}/index.html">FAULTPLANE</a></div>
                 <p class="tagline">Cyber Threat Intelligence</p>
             </header>
-            <nav>
+
+            <button type="button" class="search-trigger" id="search-trigger" aria-label="Search intelligence index">
+                <span class="search-trigger-text">Search intel...</span>
+                <kbd class="search-kbd">/</kbd>
+            </button>
+
+            <nav aria-label="Primary Navigation">
                 <ul>
-                    <li><a href="/Faultplane/index.html">Home</a></li>
-                    <li><a href="/Faultplane/feed/index.html">Feed</a></li>
-                    <li><a href="/Faultplane/categories/threat-intel.html">Threat Intel</a></li>
-                    <li><a href="/Faultplane/categories/data-breaches.html">Data Breaches</a></li>
-                    <li><a href="/Faultplane/cves/index.html">CVEs</a></li>
-                    <li><a href="/Faultplane/categories/malware.html">Malware</a></li>
-                    <li><a href="/Faultplane/categories/research.html">Research</a></li>
+                    {% for nav_item in nav_items %}
+                    <li>
+                        <a href="{{ nav_item.href }}"{% if nav_item.id == active_nav %} class="active" aria-current="page"{% endif %}>{{ nav_item.label }}</a>
+                    </li>
+                    {% endfor %}
                 </ul>
             </nav>
+
             <footer>
-                <p>&copy; 2026 DedSec-Terminal</p>
+                <p>DEDSEC-TERMINAL // FAULTPLANE</p>
             </footer>
         </aside>
-        
+
         <main class="content-area">
-            {{ content }}
+            {{ content | safe }}
         </main>
     </div>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const href = entry.target.getAttribute("href");
-                        if (href && !document.querySelector(`link[rel="prefetch"][href="${href}"]`)) {
-                            const link = document.createElement("link");
-                            link.rel = "prefetch";
-                            link.href = href;
-                            document.head.appendChild(link);
-                        }
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { rootMargin: "50px" });
 
-            document.querySelectorAll('a[href^="/Faultplane/"]').forEach(a => observer.observe(a));
-        });
-    </script>
+    <div class="search-modal" id="search-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="search-input-label">
+        <div class="search-backdrop" data-close-search></div>
+        <div class="search-dialog">
+            <div class="search-input-row">
+                <label id="search-input-label" for="search-input" class="sr-only">Search Faultplane intelligence</label>
+                <input type="search" id="search-input" placeholder="Search CVEs, malware, breaches, tags..." autocomplete="off" spellcheck="false">
+                <button type="button" class="search-close" data-close-search aria-label="Close search">ESC</button>
+            </div>
+            <div class="search-status" id="search-status" role="status">Type to search indexed intelligence records</div>
+            <ul class="search-results" id="search-results"></ul>
+        </div>
+    </div>
+
+    <script src="{{ base_url }}/js/app.js" defer></script>
 </body>
 </html>

@@ -105,14 +105,14 @@ GROQ_API_KEY=your_api_key_here
 ### 3. Build & Serve
 
 ```bash
-# Build the static site into dist/
-python scripts/build_site.py
+# Build the static site into dist/ (set FAULTPLANE_BASE_URL="" for local root serving)
+FAULTPLANE_BASE_URL="" python scripts/build_site.py
 
 # Serve locally
 python -m http.server 8000 -d dist
 ```
 
-Navigate to `http://localhost:8000/Faultplane/` in your browser.
+Navigate to `http://localhost:8000/` in your browser.
 
 ---
 

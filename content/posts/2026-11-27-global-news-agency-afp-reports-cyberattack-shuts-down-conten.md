@@ -1,0 +1,20 @@
+---
+title: Global news agency AFP reports cyberattack, shuts down content platform
+description: 'Al Jazeera Staff and AFP report: Agence France-Presse (AFP) has been
+  hit by a cyberattack, requiring the AFP Forum content platform to be taken offlin...'
+source: DataBreaches.net
+source_url: https://databreaches.net/2026/11/27/global-news-agency-afp-reports-cyberattack-shuts-down-content-platform/
+published: '2026-11-27T13:01:59+00:00'
+ingested_at: '2026-11-27T19:39:14.655005+00:00'
+date: '2026-11-27T19:39:14.655005+00:00'
+category: data-breaches
+tags:
+- data-breaches
+slug: 2026-11-27-global-news-agency-afp-reports-cyberattack-shuts-down-conten
+quote: Skill to do comes of doing.
+quote_author: Ralph Emerson
+---
+
+### Executive Summary
+
+Al Jazeera Staff and AFP report: Agence France-Presse (AFP) has been hit by a cyberattack, requiring the AFP Forum content platform to be taken offline. The France-based international news agency’s management said on Thursday that it is currently investigating the circumstances of the cyberattack, including who was behind it. “AFP was hit by a cyber...

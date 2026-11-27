@@ -1,9 +1,57 @@
-<div class="index-header">
-    <h2>{{ title_header }}</h2>
-</div>
+<header class="index-header">
+    <h1>{{ title_header }}</h1>
+    <span class="index-count">{{ total_items }} records</span>
+</header>
+
 <div class="feed-container">
-    {{ feed }}
+    <ul class="post-list">
+        {% if page_posts %}
+            {% for p in page_posts %}
+            <li>
+                <span class="post-meta">{{ p.formatted_date }}</span>
+                <div class="post-row-main">
+                    <a href="{{ p.url }}">{{ p.title }}</a>
+                    {% if p.type == 'cve' or show_category_pill %}
+                    <span class="row-badges">
+                        {% if show_category_pill %}
+                        <a href="{{ base_url }}/categories/{{ p.category }}.html" class="category-tag category-tag-sm">{{ p.category }}</a>
+                        {% endif %}
+                        {% if p.type == 'cve' %}
+                            {% if p.kev %}<span class="badge badge-kev">KEV</span>{% endif %}
+                            {% if p.severity and p.severity != 'Unknown' %}
+                            <span class="badge badge-sev badge-{{ p.severity_slug }}">{{ p.severity }}{% if p.cvss and p.cvss != 'Unknown' %} {{ p.cvss }}{% endif %}</span>
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="empty-state">No articles found in this category.</li>
+        {% endif %}
+    </ul>
 </div>
-<div class="pagination-container">
-    {{ pagination }}
-</div>
+
+{% if total_pages > 1 %}
+<nav class="pagination" aria-label="Pagination">
+    <div class="pagination-links">
+        {% if prev_href %}
+        <a href="{{ prev_href }}" class="page-btn">&laquo; Prev</a>
+        {% endif %}
+        {% for page_item in page_links %}
+            {% if page_item.ellipsis %}
+            <span class="page-ellipsis">&hellip;</span>
+            {% elif page_item.current %}
+            <span class="page-num current" aria-current="page">{{ page_item.num }}</span>
+            {% else %}
+            <a href="{{ page_item.href }}" class="page-num">{{ page_item.num }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if next_href %}
+        <a href="{{ next_href }}" class="page-btn">Next &raquo;</a>
+        {% endif %}
+    </div>
+    <span class="pagination-meta">Page {{ page }} of {{ total_pages }}</span>
+</nav>
+{% endif %}

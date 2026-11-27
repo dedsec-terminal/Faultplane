@@ -26,13 +26,23 @@
   category: threat-intel
   enabled: true
 
+- name: Google Threat Intelligence
+  url: https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/
+  category: threat-intel
+  enabled: true
+
 - name: SANS Internet Storm Center
-  url: https://isc.sans.edu/rssfeed.xml
+  url: https://isc.sans.edu/rssfeed_full.xml
   category: threat-intel
   enabled: true
 
 - name: Red Canary
   url: https://redcanary.com/blog/feed/
+  category: threat-intel
+  enabled: true
+
+- name: Huntress
+  url: https://www.huntress.com/blog/rss.xml
   category: threat-intel
   enabled: true
 
@@ -52,6 +62,11 @@
   category: malware
   enabled: true
 
+- name: The DFIR Report
+  url: https://thedfirreport.com/feed/
+  category: malware
+  enabled: true
+
 # Data Breaches & Leaks
 - name: DataBreaches.net
   url: https://databreaches.net/feed/
@@ -60,6 +75,11 @@
 
 - name: Troy Hunt (Have I Been Pwned)
   url: https://www.troyhunt.com/rss/
+  category: data-breaches
+  enabled: true
+
+- name: The Record
+  url: https://therecord.media/feed
   category: data-breaches
   enabled: true
 
@@ -89,13 +109,28 @@
   category: research
   enabled: true
 
-# Vulnerabilities & Advisories (CVEs)
+- name: GitHub Security Blog
+  url: https://github.blog/security/feed/
+  category: research
+  enabled: true
+
+- name: watchTowr Labs
+  url: https://labs.watchtowr.com/rss/
+  category: research
+  enabled: true
+
+# Vulnerabilities & Advisories
 - name: Zero Day Initiative
   url: https://www.zerodayinitiative.com/rss/published/
-  category: cves
+  category: vulnerabilities
   enabled: true
 
 - name: CISA Cyber Advisories
   url: https://www.cisa.gov/cybersecurity-advisories/all.xml
-  category: cves
+  category: vulnerabilities
+  enabled: true
+
+- name: CERT/CC Vulnerability Notes
+  url: https://kb.cert.org/vuls/atomfeed/
+  category: vulnerabilities
   enabled: true

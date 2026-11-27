@@ -1,14 +1,47 @@
 <article class="post">
     <header class="post-header">
-        <h2>{{ title }}</h2>
+        <h1>{{ item.title }}</h1>
         <div class="post-metadata">
-            <span class="categories">Category: {{ categories }}</span>
-{{ date_html }}
+            <a href="{{ category_href }}" class="category-tag">{{ item.category }}</a>
+            {% if item.formatted_date %}
+            <span class="date">{{ item.formatted_date }}</span>
+            {% endif %}
+            {% if item.type == 'cve' %}
+                {% if item.kev %}<span class="badge badge-kev">CISA KEV</span>{% endif %}
+                {% if item.severity and item.severity != 'Unknown' %}
+                <span class="badge badge-sev badge-{{ item.severity_slug }}">CVSS {{ item.cvss }} · {{ item.severity }}</span>
+                {% elif item.cvss and item.cvss != 'Unknown' %}
+                <span class="badge badge-sev badge-unknown">CVSS {{ item.cvss }}</span>
+                {% endif %}
+            {% endif %}
         </div>
     </header>
+
     <div class="post-body">
-        {{ body }}
-        {{ quote_html }}
-        {{ source_html }}
+        {{ item.body | safe }}
     </div>
+
+    <footer class="post-footer">
+        {% if item.tags %}
+        <div class="post-tags" aria-label="Tags">
+            {% for tag in item.tags %}
+            <button type="button" class="tag-chip" data-search-tag="{{ tag }}">#{{ tag }}</button>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if item.quote %}
+        <blockquote class="post-quote">
+            <p>"{{ item.quote }}"</p>
+            <cite>&mdash; {{ item.quote_author }}</cite>
+        </blockquote>
+        {% endif %}
+
+        {% if item.source_url %}
+        <div class="post-source">
+            <strong>Source:</strong>
+            <a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer">{{ item.source or "Original Article" }}</a>
+        </div>
+        {% endif %}
+    </footer>
 </article>

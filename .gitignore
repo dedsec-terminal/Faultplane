@@ -1,7 +1,8 @@
 # =========================
-# STATIC BUILD OUTPUT
+# STATIC BUILD & CACHE
 # =========================
 dist/
+.build_cache/
 
 # =========================
 # OS / SYSTEM FILES

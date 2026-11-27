@@ -7,11 +7,18 @@ on:
     paths:
       - 'content/posts/**'
       - 'content/cves/**'
+      - 'config/feeds.yaml'
       - 'src/**'
       - 'scripts/build_site.py'
+      - 'requirements.txt'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
   workflow_call:
+    inputs:
+      ref:
+        description: "Git ref or SHA to build and deploy"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -25,18 +32,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ inputs.ref || github.sha }}
+          fetch-depth: 1
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
+          cache-dependency-path: requirements.txt
 
       - name: Install Dependencies
         run: |
@@ -61,7 +70,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
