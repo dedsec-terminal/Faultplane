@@ -18,9 +18,8 @@
             <ul class="post-list compact-list">
                 {% for item in section['items'] %}
                 <li>
-                    {% if item.formatted_date %}<time class="post-meta" datetime="{{ item.date_iso }}">{{ item.formatted_date }}</time>{% endif %}
-                    <div class="post-row-main">
-                        <a href="{{ item.url }}">{{ item.title }}</a>
+                    <div class="tile-item-meta">
+                        {% if item.formatted_date %}<time class="post-meta" datetime="{{ item.date_iso }}">{{ item.formatted_date }}</time>{% endif %}
                         {% if item.type == 'cve' %}
                         <span class="row-badges">
                             {% if item.kev %}<span class="badge badge-kev">KEV</span>{% endif %}
@@ -30,6 +29,7 @@
                         </span>
                         {% endif %}
                     </div>
+                    <a class="tile-item-title" href="{{ item.url }}" title="{{ item.title }}">{{ item.title }}</a>
                     {% if item.description %}<p class="post-preview">{{ item.description }}</p>{% endif %}
                 </li>
                 {% endfor %}

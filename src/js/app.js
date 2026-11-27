@@ -84,11 +84,21 @@
 
             const metaSpan = document.createElement("span");
             metaSpan.className = "search-result-meta";
-            const parts = [item.c];
-            if (item.k) parts.push("KEV");
-            if (item.s) parts.push(item.s);
-            if (item.d) parts.push(item.d);
-            metaSpan.textContent = parts.join(" · ");
+            const category = document.createElement("span");
+            category.className = "category-tag";
+            category.dataset.category = item.c;
+            category.textContent = item.c.replace(/-/g, " ");
+            metaSpan.append(category);
+            const badges = [];
+            if (item.k) badges.push(["KEV", "badge-kev"]);
+            if (item.s) badges.push([item.s, `badge-${item.s.toLowerCase()}`]);
+            for (const [text, style] of badges) {
+                const badge = document.createElement("span");
+                badge.className = `badge ${style}`;
+                badge.textContent = text;
+                metaSpan.append(badge);
+            }
+            if (item.d) metaSpan.append(item.d);
 
             a.appendChild(titleSpan);
             a.appendChild(metaSpan);

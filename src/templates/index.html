@@ -14,7 +14,7 @@
                     {% if p.type == 'cve' or show_category_pill %}
                     <span class="row-badges">
                         {% if show_category_pill %}
-                        <a href="{{ base_url }}/categories/{{ p.category }}.html" class="category-tag category-tag-sm">{{ p.category }}</a>
+                        <a href="{{ base_url }}/categories/{{ p.category }}.html" class="category-tag" data-category="{{ p.category }}">{{ p.category | replace('-', ' ') }}</a>
                         {% endif %}
                         {% if p.type == 'cve' %}
                             {% if p.kev %}<span class="badge badge-kev">KEV</span>{% endif %}

@@ -2,7 +2,7 @@
     <header class="post-header">
         <h1>{{ item.title }}</h1>
         <div class="post-metadata">
-            <a href="{{ category_href }}" class="category-tag">{{ item.category }}</a>
+            <a href="{{ category_href }}" class="category-tag" data-category="{{ item.category }}">{{ item.category | replace('-', ' ') }}</a>
             {% if item.formatted_date %}
             <time class="date" datetime="{{ item.date_iso }}">{{ item.formatted_date }}</time>
             {% endif %}
@@ -11,7 +11,7 @@
                 {% if item.severity and item.severity != 'Unknown' %}
                 <span class="badge badge-sev badge-{{ item.severity_slug }}">CVSS {{ item.cvss }} · {{ item.severity }}</span>
                 {% elif item.cvss and item.cvss != 'Unknown' %}
-                <span class="badge badge-sev badge-unknown">CVSS {{ item.cvss }}</span>
+                <span class="badge badge-sev">CVSS {{ item.cvss }}</span>
                 {% endif %}
             {% endif %}
         </div>
