@@ -5,6 +5,12 @@
     const input = document.getElementById("search-input");
     const statusEl = document.getElementById("search-status");
     const resultsEl = document.getElementById("search-results");
+    const nav = document.querySelector(".site-nav");
+    const activeLink = nav?.querySelector("[aria-current=page]");
+
+    if (activeLink && activeLink.getBoundingClientRect().right > nav.getBoundingClientRect().right) {
+        nav.scrollLeft += activeLink.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+    }
 
     let indexData = null;
     let indexPromise = null;

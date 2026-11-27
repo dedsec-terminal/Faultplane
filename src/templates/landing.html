@@ -18,15 +18,19 @@
             <ul class="post-list compact-list">
                 {% for item in section['items'] %}
                 <li>
-                    <a href="{{ item.url }}">{{ item.title }}</a>
-                    {% if item.type == 'cve' %}
-                    <span class="row-badges">
-                        {% if item.kev %}<span class="badge badge-kev">KEV</span>{% endif %}
-                        {% if item.severity and item.severity != 'Unknown' %}
-                        <span class="badge badge-sev badge-{{ item.severity_slug }}">{{ item.severity }}</span>
+                    {% if item.formatted_date %}<time class="post-meta" datetime="{{ item.date_iso }}">{{ item.formatted_date }}</time>{% endif %}
+                    <div class="post-row-main">
+                        <a href="{{ item.url }}">{{ item.title }}</a>
+                        {% if item.type == 'cve' %}
+                        <span class="row-badges">
+                            {% if item.kev %}<span class="badge badge-kev">KEV</span>{% endif %}
+                            {% if item.severity and item.severity != 'Unknown' %}
+                            <span class="badge badge-sev badge-{{ item.severity_slug }}">{{ item.severity }}</span>
+                            {% endif %}
+                        </span>
                         {% endif %}
-                    </span>
-                    {% endif %}
+                    </div>
+                    {% if item.description %}<p class="post-preview">{{ item.description }}</p>{% endif %}
                 </li>
                 {% endfor %}
             </ul>

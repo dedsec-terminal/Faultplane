@@ -8,7 +8,7 @@
         {% if page_posts %}
             {% for p in page_posts %}
             <li>
-                <span class="post-meta">{{ p.formatted_date }}</span>
+                {% if p.formatted_date %}<time class="post-meta" datetime="{{ p.date_iso }}">{{ p.formatted_date }}</time>{% endif %}
                 <div class="post-row-main">
                     <a href="{{ p.url }}">{{ p.title }}</a>
                     {% if p.type == 'cve' or show_category_pill %}

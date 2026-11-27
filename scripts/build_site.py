@@ -366,14 +366,8 @@ def compile_markdown_item(md_file: Path, item_type: str):
     raw_published = frontmatter.get("published")
     raw_ingested = frontmatter.get("ingested_at")
 
-    if item_type == "cve":
-        display_dt = parse_iso_utc(raw_published) or parse_iso_utc(raw_date) or parse_iso_utc(raw_ingested)
-        sort_dt = parse_iso_utc(raw_date) or parse_iso_utc(raw_published) or parse_iso_utc(raw_ingested)
-    else:
-        display_dt = parse_iso_utc(raw_published) or parse_iso_utc(raw_date) or parse_iso_utc(raw_ingested)
-        sort_dt = parse_iso_utc(raw_ingested) or parse_iso_utc(raw_date) or parse_iso_utc(raw_published)
-
-    sort_ts = sort_dt.timestamp() if sort_dt else 0.0
+    display_dt = parse_iso_utc(raw_published) or parse_iso_utc(raw_date) or parse_iso_utc(raw_ingested)
+    sort_ts = display_dt.timestamp() if display_dt else float("-inf")
     formatted_date = display_dt.strftime("%d-%m-%y") if display_dt else ""
 
     category = str(frontmatter.get("category", "other")).lower().strip().replace(" ", "-")
@@ -397,6 +391,7 @@ def compile_markdown_item(md_file: Path, item_type: str):
         "title": raw_title,
         "description": raw_desc,
         "formatted_date": formatted_date,
+        "date_iso": display_dt.date().isoformat() if display_dt else "",
         "sort_ts": sort_ts,
         "category": category,
         "tags": tags,
@@ -714,6 +709,20 @@ def build_site():
             "href": f"{BASE_URL}/categories/vulnerabilities.html",
             "link_label": "View All Advisories",
             "items": category_map.get("vulnerabilities", [])[:4],
+            "full_width": False,
+        },
+        {
+            "title": "Campaigns",
+            "href": f"{BASE_URL}/categories/campaigns.html",
+            "link_label": "View All Campaigns",
+            "items": category_map.get("campaigns", [])[:4],
+            "full_width": False,
+        },
+        {
+            "title": "Other",
+            "href": f"{BASE_URL}/categories/other.html",
+            "link_label": "View All Other Posts",
+            "items": category_map.get("other", [])[:4],
             "full_width": False,
         },
     ]

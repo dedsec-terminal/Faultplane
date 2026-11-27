@@ -89,6 +89,33 @@ class TestRSSParsing(unittest.TestCase):
 
 
 class TestBuildSiteAndDates(unittest.TestCase):
+    def test_post_and_cve_rank_by_displayed_publication_date(self):
+        import tempfile
+
+        records = [
+            ("old-post", "post", "2026-11-12", "2026-11-27"),
+            ("new-post", "post", "2026-11-17", "2026-11-19"),
+            ("CVE-2026-1234", "cve", "2026-11-13", "2026-11-28"),
+            ("undated-post", "post", "", "2026-11-14"),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            compiled = []
+            for slug, kind, published, fallback in records:
+                path = Path(tmp) / f"{slug}.md"
+                path.write_text(
+                    f'---\ntitle: "{slug}"\npublished: "{published}"\n'
+                    f'date: "{fallback}"\ningested_at: "{fallback}"\n---\nBody\n',
+                    encoding="utf-8",
+                )
+                compiled.append(build_site.compile_markdown_item(path, kind))
+        compiled.sort(key=lambda item: item["sort_ts"], reverse=True)
+        self.assertEqual([item["slug"] for item in compiled], [
+            "new-post", "undated-post", "CVE-2026-1234", "old-post",
+        ])
+        self.assertEqual([item["formatted_date"] for item in compiled], [
+            "17-11-26", "14-11-26", "13-11-26", "12-11-26",
+        ])
+
     def test_universal_dd_mm_yy_date_format(self):
         self.assertEqual(build_site.format_date_short("2026-11-27T22:06:11+05:30"), "27-11-26")
         self.assertEqual(build_site.format_date_short("2025-05-27T21:15:23.197Z"), "27-05-25")

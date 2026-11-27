@@ -4,7 +4,7 @@
         <div class="post-metadata">
             <a href="{{ category_href }}" class="category-tag">{{ item.category }}</a>
             {% if item.formatted_date %}
-            <span class="date">{{ item.formatted_date }}</span>
+            <time class="date" datetime="{{ item.date_iso }}">{{ item.formatted_date }}</time>
             {% endif %}
             {% if item.type == 'cve' %}
                 {% if item.kev %}<span class="badge badge-kev">CISA KEV</span>{% endif %}

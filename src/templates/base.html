@@ -16,19 +16,14 @@
     <link rel="stylesheet" href="{{ base_url }}/css/style.css">
 </head>
 <body data-base-url="{{ base_url }}">
-    <div class="layout">
-        <aside class="sidebar">
-            <header>
-                <div class="brand"><a href="{{ base_url }}/index.html">FAULTPLANE</a></div>
-                <p class="tagline">Cyber Threat Intelligence</p>
-            </header>
-
-            <button type="button" class="search-trigger" id="search-trigger" aria-label="Search intelligence index">
-                <span class="search-trigger-text">Search intel...</span>
-                <kbd class="search-kbd">/</kbd>
-            </button>
-
-            <nav aria-label="Primary Navigation">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="site-brand" href="{{ base_url }}/index.html">
+                <img src="{{ base_url }}/images/favicon-32x32.png" alt="" width="20" height="20">
+                Faultplane
+            </a>
+            <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     {% for nav_item in nav_items %}
                     <li>
@@ -37,16 +32,15 @@
                     {% endfor %}
                 </ul>
             </nav>
+            <button type="button" class="search-trigger" id="search-trigger" aria-haspopup="dialog">
+                Search <kbd class="search-kbd" aria-hidden="true">/</kbd>
+            </button>
+        </div>
+    </header>
 
-            <footer>
-                <p>DEDSEC-TERMINAL // FAULTPLANE</p>
-            </footer>
-        </aside>
-
-        <main class="content-area">
-            {{ content | safe }}
-        </main>
-    </div>
+    <main class="content-area" id="main-content">
+        {{ content | safe }}
+    </main>
 
     <div class="search-modal" id="search-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="search-input-label">
         <div class="search-backdrop" data-close-search></div>
