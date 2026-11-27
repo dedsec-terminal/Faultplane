@@ -15,6 +15,7 @@
     --sev-low: #4CAF50;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
+    --page-gutter: clamp(1rem, 2vw, 2rem);
 }
 
 * {
@@ -88,9 +89,7 @@ input:focus-visible {
     grid-template-areas: "brand nav search";
     align-items: center;
     gap: 0 1.25rem;
-    max-width: 76rem;
-    margin-inline: auto;
-    padding-inline: clamp(1rem, 3vw, 2rem);
+    padding-inline: var(--page-gutter);
 }
 
 .site-brand {
@@ -116,7 +115,6 @@ input:focus-visible {
 .site-nav ul {
     display: flex;
     align-items: center;
-    justify-content: safe center;
     gap: clamp(0.75rem, 1.35vw, 1.25rem);
     list-style: none;
 }
@@ -178,9 +176,7 @@ input:focus-visible {
 }
 
 .content-area {
-    max-width: 70rem;
-    margin-inline: auto;
-    padding: 2.75rem clamp(1rem, 4vw, 3.5rem);
+    padding: 2.75rem var(--page-gutter);
     scroll-margin-top: 6rem;
     overflow-wrap: anywhere;
 }
@@ -412,10 +408,6 @@ input:focus-visible {
 }
 
 /* Post Page */
-.post {
-    max-width: 780px;
-}
-
 .post-header {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
@@ -929,7 +921,7 @@ input:focus-visible {
 /* Responsive */
 @media (max-width: 1024px) {
     .content-area {
-        padding: 2rem 2rem;
+        padding-block: 2rem;
     }
 }
 
@@ -939,12 +931,20 @@ input:focus-visible {
         grid-template-areas: "brand search" "nav nav";
     }
 
-    .site-nav ul {
-        justify-content: flex-start;
-    }
-
     .site-nav a {
         min-height: 2.35rem;
+    }
+}
+
+@media (min-width: 75rem) {
+    .landing-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 94rem) {
+    .landing-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
